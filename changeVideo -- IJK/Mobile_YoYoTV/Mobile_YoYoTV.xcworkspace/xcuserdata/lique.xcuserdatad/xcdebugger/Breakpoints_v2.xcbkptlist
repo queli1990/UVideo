@@ -36,7 +36,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Mobile_YoYoTV/PushHelper.m"
-            timestampString = "562490538.517014"
+            timestampString = "572411995.648368"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "32"
@@ -164,11 +164,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Mobile_YoYoTV/PerDownloadViewController.m"
-            timestampString = "570004872.580042"
+            timestampString = "572769244.845318"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "542"
-            endingLineNumber = "542"
+            startingLineNumber = "569"
+            endingLineNumber = "569"
             landmarkName = "-selectedBtn:"
             landmarkType = "7">
          </BreakpointContent>
@@ -180,12 +180,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Mobile_YoYoTV/NineBoxDownloadBtn.m"
-            timestampString = "570006819.201529"
+            timestampString = "572412777.605211"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "84"
             endingLineNumber = "84"
             landmarkName = "-touchesBegan:withEvent:"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Mobile_YoYoTV/PlayerRequest.m"
+            timestampString = "572785521.868744"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "139"
+            endingLineNumber = "139"
+            landmarkName = "-requestDefinitionWithArray:complement:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

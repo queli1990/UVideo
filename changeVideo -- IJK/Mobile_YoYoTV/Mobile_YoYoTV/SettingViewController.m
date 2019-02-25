@@ -75,6 +75,12 @@
         [cell.contentView addSubview:newLabel];
         cell.accessoryType = UITableViewCellAccessoryNone;
         cell.arrowImg.hidden = YES;
+    } else if (indexPath.row == 2) {
+        cell.arrowImg.hidden = YES;
+        UISwitch *accessSwitch = [[UISwitch alloc] initWithFrame:CGRectMake(cell.frame.size.width-60, 6.5, 0, 0)];
+        accessSwitch.on = [[NSUserDefaults standardUserDefaults] boolForKey:HWDownloadAllowsCellularAccessKey];
+        [accessSwitch addTarget:self action:@selector(accessSwitchOnClick:) forControlEvents:UIControlEventValueChanged];
+        [cell.contentView addSubview:accessSwitch];
     } else {
         cell.arrowImg.hidden = NO;
     }
@@ -82,6 +88,14 @@
     cell.textLabel.textColor = UIColorFromRGB(0x4A4A4A, 1.0);
     cell.backgroundColor = [UIColor clearColor];
     return cell;
+}
+
+- (void)accessSwitchOnClick:(UISwitch *)accessSwitch {
+    // 保存
+    [[NSUserDefaults standardUserDefaults] setBool:accessSwitch.isOn forKey:HWDownloadAllowsCellularAccessKey];
+    
+    // 通知
+    [[NSNotificationCenter defaultCenter] postNotificationName:HWDownloadAllowsCellularAccessChangeNotification object:[NSNumber numberWithBool:accessSwitch.isOn]];
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -92,6 +106,8 @@
         NSString * url = [NSString stringWithFormat:@"itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&id=%@",@"1435558135"];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:url]];
     } else if (indexPath.row == 2) {
+        
+    } else if (indexPath.row == 3) {
         UserProtocolViewController *vc = [UserProtocolViewController new];
         [self.navigationController pushViewController:vc animated:YES];
     }
@@ -136,8 +152,9 @@
     if (_titlesArray == nil) {
         NSDictionary *dic1 = @{@"title":@"当前版本"};
         NSDictionary *dic2 = @{@"title":@"我来打分"};
+        NSDictionary *dic4 = @{@"title":@"允许非WiFi网络下载"};
         NSDictionary *dic3 = @{@"title":@"用户协议"};
-        _titlesArray = @[dic1,dic2,dic3];
+        _titlesArray = @[dic1,dic2,dic4,dic3];
     }
     return _titlesArray;
 }

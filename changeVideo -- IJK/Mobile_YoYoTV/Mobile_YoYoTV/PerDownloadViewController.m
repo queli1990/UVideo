@@ -14,6 +14,7 @@
 #import "CalculateView.h"
 #import "NSMutableAttributedString+Color.h"
 #import "UserActionRequest.h"
+#import "SettingViewController.h"
 
 @interface PerDownloadNavView : UIView
 @property (nonatomic,strong) UIButton *backBtn;
@@ -177,6 +178,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor whiteColor];
+    [self.navigationController setNavigationBarHidden:YES];
     [self.view addSubview:self.navView];
     _selectedIndex = 1000; // 默认值
     [self dealData];
@@ -341,6 +343,29 @@
     [self.view addSubview:scrollView];
 }
 
+// 判断当前是否为4G，并且不允许4G网络下载
+- (void) showCellularAccessOrNetworkingReachability {
+    //    AFNetworkReachabilityStatusUnknown          = -1,
+    //    AFNetworkReachabilityStatusNotReachable     = 0,
+    //    AFNetworkReachabilityStatusReachableViaWWAN = 1,
+    //    AFNetworkReachabilityStatusReachableViaWiFi = 2,
+    if (!([[HWNetworkReachabilityManager shareManager] networkReachabilityStatus] == AFNetworkReachabilityStatusReachableViaWiFi)) {
+        if (![[NSUserDefaults standardUserDefaults] boolForKey:HWDownloadAllowsCellularAccessKey]) {
+            UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"\"允许非WiFi网络下载\"已关闭" message:@"请前往\"我的\"-\"系统设置\"中手动开启\"允许非WiFi网络下载\"" preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction *defaultAction = [UIAlertAction actionWithTitle:@"前往" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                SettingViewController *vc = [SettingViewController new];
+                [self.navigationController pushViewController:vc animated:YES];
+            }];
+            UIAlertAction *cancleAction = [UIAlertAction actionWithTitle:@"取消" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+                
+            }];
+            [alert addAction:defaultAction];
+            [alert addAction:cancleAction];
+            [self presentViewController:alert animated:YES completion:nil];
+        }
+    }
+}
+
 #pragma mark -- 选中正方形的view中btn的点击事件
 // 此处的btn其实是个view
 - (void)selectBtn:(NineBoxDownloadBtn *)btn withArray:(nonnull NSArray *)array {
@@ -366,6 +391,7 @@
     if (btn.model.state == HWDownloadStateDefault || btn.model.state == HWDownloadStatePaused || btn.model.state == HWDownloadStateError) {
         // 点击默认、暂停、失败状态，调用开始下载
         [[HWDownloadManager shareManager] startDownloadTask:btn.model];
+        [self showCellularAccessOrNetworkingReachability];
     } else if (btn.model.state == HWDownloadStateDownloading || btn.model.state == HWDownloadStateWaiting) {
         // 点击正在下载、等待状态，调用暂停下载
         [[HWDownloadManager shareManager] pauseDownloadTask:btn.model];
@@ -457,6 +483,7 @@
     if (cell.model.state == HWDownloadStateDefault || cell.model.state == HWDownloadStatePaused || cell.model.state == HWDownloadStateError) {
         // 点击默认、暂停、失败状态，调用开始下载
         [[HWDownloadManager shareManager] startDownloadTask:cell.model];
+        [self showCellularAccessOrNetworkingReachability];
     } else if(cell.model.state == HWDownloadStateDownloading || cell.model.state == HWDownloadStateWaiting) {
         // 点击正在下载、等待状态，调用暂停下载
         [[HWDownloadManager shareManager] pauseDownloadTask:cell.model];

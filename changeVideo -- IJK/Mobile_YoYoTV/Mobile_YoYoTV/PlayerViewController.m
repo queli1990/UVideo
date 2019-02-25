@@ -39,7 +39,7 @@ static NSString *const pageCode = @"1000100006";
 
 static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/635942-14593722fe3f0695.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240";
 
-@interface PlayerViewController ()<selectedIndexDelegate,UITableViewDelegate,UITableViewDataSource,ShareResultDelegate>
+@interface PlayerViewController ()<selectedIndexDelegate,UITableViewDelegate,UITableViewDataSource,ShareResultDelegate,SelectedConfigDelete>
 /** 播放器View的父视图*/
 @property (nonatomic, strong) ZFPlayerController *player;
 @property (nonatomic, strong) UIImageView *containerView;
@@ -74,6 +74,8 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
 //广告的view
 @property (nonatomic, strong) GADBannerView *bannerView;
 @property (nonatomic) BOOL isPop;
+@property (nonatomic ,strong) UIView *deliverView; //底部View
+@property (nonatomic ,strong) UIView *BGView; //遮罩
 @end
 
 @implementation PlayerViewController
@@ -247,6 +249,10 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
         NSURL *playerUrl = [self dealUrlWithFiles:self.vimeoResponseDic[@"files"] andDownload:self.vimeoResponseDic[@"download"]];
         NSString *videoTitle = _vimeoResponseDic[@"name"];
         self.player.assetURL = playerUrl;
+        [[PlayerRequest new] requestDefinitionWithArray:self.player.assetURL complement:^(BOOL isSuccess, NSArray *contentArray) {
+            NSLog(@"解析hls");
+        }];
+        
         [self.controlView showTitle:videoTitle coverURLString:kVideoCover fullScreenMode:ZFFullScreenModeLandscape];
         [self.player.currentPlayerManager play];
     }
@@ -261,6 +267,10 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
 //        NSMutableArray *arr = [self dealUrlWidthWithFiles:currendDic[@"files"] andDownload:currendDic[@"download"]];
 //        self.playerModel.videoURL         = [NSURL URLWithString:[arr lastObject][@"link"]];
         self.player.assetURL = [self dealUrlWithFiles:currendDic[@"files"] andDownload:currendDic[@"download"]];
+        [[PlayerRequest new] requestDefinitionWithArray:self.player.assetURL complement:^(BOOL isSuccess, NSArray *contentArray) {
+            NSLog(@"解析hls");
+        }];
+        
         NSString *videoTitle = currendDic[@"name"];
         [self.controlView showTitle:videoTitle coverURLString:kVideoCover fullScreenMode:ZFFullScreenModeLandscape];
         [self.player.currentPlayerManager play];
@@ -853,7 +863,8 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     vc.model = self.model;
     vc.vimeoDataDic = [NSMutableDictionary dictionaryWithDictionary:self.vimeoResponseDic];
     vc.vimeoDataArray = self.vimeoResponseArray;
-    [self presentViewController:vc animated:YES completion:^{
+    UINavigationController *nav = [[UINavigationController alloc] initWithRootViewController:vc];
+    [self presentViewController:nav animated:YES completion:^{
         [_player.currentPlayerManager pause];
     }];
     _isPop = NO;
@@ -1078,11 +1089,25 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
 - (ZFPlayerControlView *)controlView {
     if (!_controlView) {
         _controlView = [ZFPlayerControlView new];
+        _controlView.landScapeControlView.tempViewController = self.navigationController;
+        _controlView.landScapeControlView.delegate = self;
         _controlView.fastViewAnimated = YES;
         [_controlView.portraitControlView.backBtn addTarget:self action:@selector(popToLastPage) forControlEvents:UIControlEventTouchUpInside];
     }
     return _controlView;
 }
+
+- (void) selectedIndex:(NSInteger)index withConfigType:(ConfigType)type {
+    if (type == rateType) { // 改变的播放速率
+        NSArray *tempArr = @[@"播放倍速",@"1.0X",@"1.25",@"1.5X",@"2.0X"];
+        [_controlView.landScapeControlView.rateBtn setTitle:tempArr[index] forState:UIControlStateNormal];
+        float rate = 1 + (index - 1)*0.5;
+        self.playerManager.rate = rate;
+    } else { // 改变清晰度
+        
+    }
+}
+
 
 - (UIImageView *)containerView {
     if (!_containerView) {

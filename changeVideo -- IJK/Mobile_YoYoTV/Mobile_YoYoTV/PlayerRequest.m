@@ -126,6 +126,75 @@
     }
 }
 
+- (void) requestDefinitionWithArray:(NSURL *)url complement:(void(^)(BOOL isSuccess,NSArray *contentArray))complement {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    [manager GET:url.absoluteString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
+        
+    } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+
+        NSString *jsonStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+        NSArray *array = [jsonStr componentsSeparatedByString:@"\n"];
+        NSArray *resultArr = [self dealDenifition:array];
+        NSLog(@"resultArr:%@",resultArr);
+        complement(YES,resultArr);
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        NSLog(@"获取hls解析流失败");
+        complement(NO,nil);
+    }];
+}
+
+- (NSArray *) dealDenifition:(NSArray *)array {
+    // 筛选出 RESOLUTION 文件
+    NSMutableArray *resolutionArr = [NSMutableArray arrayWithCapacity:0];
+    for (int i = 0; i < array.count; i++) {
+        NSString *str = array[i];
+        if ([str containsString:@"RESOLUTION="]) {
+            NSRange fromRange = [str rangeOfString:@"RESOLUTION="];
+            NSRange toRange = [str rangeOfString:@",FRAME-RATE"];
+            NSRange range = NSMakeRange(fromRange.location+fromRange.length, toRange.location-fromRange.location-fromRange.length);
+            NSString *contentStr = [str substringWithRange:range];
+            NSArray *contentArray = [contentStr componentsSeparatedByString:@"x"];
+            NSString *width = contentArray[0];
+            if (width.integerValue <= 144) {
+                width = @"144";
+            } else if (width.integerValue <= 240) {
+                width = @"240";
+            } else if (width.integerValue <= 360) {
+                width = @"360";
+            } else if (width.integerValue <= 480) {
+                width = @"480";
+            } else if (width.integerValue <= 560) {
+                width = @"560";
+            } else if (width.integerValue <= 720) {
+                width = @"720";
+            } else if (width.integerValue <= 1080) {
+                width = @"1080";
+            } else if (width.integerValue <= 1440) {
+                width = @"1440";
+            } else if (width.integerValue <= 2160) {
+                width = @"2160";
+            }
+            [resolutionArr addObject:width];
+        }
+    }
+    // 筛选出 url 文件
+    NSMutableArray *urlArr = [NSMutableArray arrayWithCapacity:0];
+    for (int i = 0; i < array.count; i++) {
+        NSString *str = array[i];
+        if ([str containsString:@"https://"]) {
+            [urlArr addObject:str];
+        }
+    }
+    
+    NSMutableArray *resultArr  = [NSMutableArray arrayWithCapacity:0];
+    for (int i = 0; i < urlArr.count; i++) {
+        NSDictionary *dic = @{@"width":resolutionArr[i],@"url":urlArr[i]};
+        [resultArr addObject:dic];
+    }
+    return resultArr;
+}
+
 /**
  此方法作废，vimeo新增了排序接口，不需要再自己排序
  */

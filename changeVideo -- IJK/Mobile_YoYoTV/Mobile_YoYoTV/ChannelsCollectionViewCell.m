@@ -27,8 +27,8 @@
 
 - (void)setModel:(GenresModel *)model {
     _model = model;
-    NSURL *imgURL = [NSURL URLWithString:model.image_focus];
-    [_sumimageView sd_setImageWithURL:imgURL];
+//    NSURL *imgURL = [NSURL URLWithString:model.image_focus];
+//    [_sumimageView sd_setImageWithURL:imgURL];
     
     self.titleLabel.text = model.name;
 }
