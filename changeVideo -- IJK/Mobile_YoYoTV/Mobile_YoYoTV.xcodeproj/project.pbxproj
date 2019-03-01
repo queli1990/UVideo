@@ -205,6 +205,7 @@
 		004ECDC41FE36C39004F5846 /* login_personal_normal.png in Resources */ = {isa = PBXBuildFile; fileRef = 004ECDC21FE36C38004F5846 /* login_personal_normal.png */; };
 		004ECE091FE3B8D3004F5846 /* gradient.png in Resources */ = {isa = PBXBuildFile; fileRef = 004ECE081FE3B8D3004F5846 /* gradient.png */; };
 		0059B164218B006A00A5F5DD /* PlayerNativeAdsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0059B163218B006A00A5F5DD /* PlayerNativeAdsView.m */; };
+		005C99DB2227D81F00302785 /* Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 005C99DA2227D81F00302785 /* Tools.m */; };
 		007127FC2142761B00246FB0 /* ShareView.m in Sources */ = {isa = PBXBuildFile; fileRef = 007127FB2142761B00246FB0 /* ShareView.m */; };
 		007127FF2142797C00246FB0 /* ShareTypeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 007127FE2142797C00246FB0 /* ShareTypeButton.m */; };
 		0071280721427CC100246FB0 /* facebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0071280121427CB800246FB0 /* facebook@2x.png */; };
@@ -686,6 +687,8 @@
 		004ECE081FE3B8D3004F5846 /* gradient.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gradient.png; sourceTree = "<group>"; };
 		0059B162218B006A00A5F5DD /* PlayerNativeAdsView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PlayerNativeAdsView.h; sourceTree = "<group>"; };
 		0059B163218B006A00A5F5DD /* PlayerNativeAdsView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayerNativeAdsView.m; sourceTree = "<group>"; };
+		005C99D92227D81F00302785 /* Tools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tools.h; sourceTree = "<group>"; };
+		005C99DA2227D81F00302785 /* Tools.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tools.m; sourceTree = "<group>"; };
 		007127FA2142761B00246FB0 /* ShareView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareView.h; sourceTree = "<group>"; };
 		007127FB2142761B00246FB0 /* ShareView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareView.m; sourceTree = "<group>"; };
 		007127FD2142797C00246FB0 /* ShareTypeButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareTypeButton.h; sourceTree = "<group>"; };
@@ -1187,6 +1190,8 @@
 		001DC28B1EB86BF100AEC03D /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				005C99D92227D81F00302785 /* Tools.h */,
+				005C99DA2227D81F00302785 /* Tools.m */,
 				009E43381ED9614B00DF39F0 /* StorageHelper.h */,
 				009E43391ED9614B00DF39F0 /* StorageHelper.m */,
 				008B9F831FBC18E0002DEA56 /* PushHelper.h */,
@@ -2285,6 +2290,7 @@
 				00DC760E1EC1C13B0036566D /* HomeHeadCollectionReusableView.m in Sources */,
 				003390C921F0755E0054AB0C /* NSDate+Utils.m in Sources */,
 				002D6B1F21A6ACA300BADF5C /* HWProgressHUD.m in Sources */,
+				005C99DB2227D81F00302785 /* Tools.m in Sources */,
 				00DC76111EC1C1560036566D /* HomeHead_title_CollectionReusableView.m in Sources */,
 				0030166A2213F085001A317E /* ZFSpeedLoadingView.m in Sources */,
 				00144D161FC3C2F600065602 /* BottomLineBtn.m in Sources */,

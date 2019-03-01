@@ -126,9 +126,12 @@
     }
 }
 
+/// 暂时不用。解析多次后悔提示-1005错误
 - (void) requestDefinitionWithArray:(NSURL *)url complement:(void(^)(BOOL isSuccess,NSArray *contentArray))complement {
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
     manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    manager.requestSerializer.timeoutInterval = 15;
+    
     [manager GET:url.absoluteString parameters:nil progress:^(NSProgress * _Nonnull downloadProgress) {
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
@@ -136,10 +139,9 @@
         NSString *jsonStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
         NSArray *array = [jsonStr componentsSeparatedByString:@"\n"];
         NSArray *resultArr = [self dealDenifition:array];
-        NSLog(@"resultArr:%@",resultArr);
         complement(YES,resultArr);
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        NSLog(@"获取hls解析流失败");
+        NSLog(@"获取hls解析流失败----%@",error);
         complement(NO,nil);
     }];
 }
@@ -192,8 +194,41 @@
         NSDictionary *dic = @{@"width":resolutionArr[i],@"url":urlArr[i]};
         [resultArr addObject:dic];
     }
+    [resultArr insertObject:@{@"width":@"清晰度"} atIndex:0];
     return resultArr;
 }
+
++ (NSArray *) dealUrlWithDownload:(NSArray *)downloadsArray {
+    NSMutableArray *tempArray = [NSMutableArray arrayWithCapacity:0];
+    if (downloadsArray.count) {
+        for (int i = 0; i < downloadsArray.count; i++) {
+            PlayerModel *model = [PlayerModel modelWithDictionary:downloadsArray[i]];
+            if (![model.quality isEqualToString:@"hls"]) {
+                NSDictionary *dic = @{@"width":[NSString stringWithFormat:@"%@",model.width],@"url":[NSURL URLWithString:model.link]};
+                [tempArray addObject:dic];
+            }
+        }
+        return [PlayerRequest sortArray:tempArray];
+    }
+    return tempArray;
+}
+
+/// 排序
++ (NSArray *) sortArray:(NSMutableArray *)tempArray {
+    [tempArray sortUsingComparator:^NSComparisonResult(id _Nonnull obj1, id _Nonnull obj2)
+     {
+         //此处的规则含义为：若前一元素比后一元素小，则返回降序（即后一元素在前，为从大到小排列）
+         if ([obj1[@"width"] integerValue] > [obj2[@"width"] integerValue]){
+             return NSOrderedDescending;
+         } else {
+             return NSOrderedAscending;
+         }
+     }];
+    return tempArray;
+}
+
+
+
 
 /**
  此方法作废，vimeo新增了排序接口，不需要再自己排序

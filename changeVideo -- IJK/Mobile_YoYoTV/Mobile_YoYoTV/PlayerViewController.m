@@ -13,7 +13,6 @@
 #import "ZFPlayer.h"
 //#import "ZFAVPlayerManager.h"
 #import "ZFIJKPlayerManager.h"
-#import "KSMediaPlayerManager.h"
 #import "ZFPlayerControlView.h"
 
 
@@ -76,6 +75,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
 @property (nonatomic) BOOL isPop;
 @property (nonatomic ,strong) UIView *deliverView; //底部View
 @property (nonatomic ,strong) UIView *BGView; //遮罩
+@property (nonatomic, strong) NSArray *urlsArray;
 @end
 
 @implementation PlayerViewController
@@ -90,7 +90,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     if (self.navigationController.viewControllers.count == 2 && self.isPlaying) {
         self.isPlaying = NO;
     }
-    _enterPageTime = [self getTimeStamp];
+    _enterPageTime = [Tools getTimeStamp];
     self.player.viewControllerDisappear = NO;
 }
 
@@ -108,7 +108,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     if ([statusBar respondsToSelector:@selector(setBackgroundColor:)]) {
 //        statusBar.backgroundColor = UIColorFromRGB(0x2F2D30, 1.0);
     }
-    _leavePageTime = [self getTimeStamp];
+    _leavePageTime = [Tools getTimeStamp];
     int tempValue = [self.model.ID intValue];
     [UserActionRequest postDetailPageEventCode:@"1000106001" successCode:@1 beginTime:_enterPageTime endTime:_leavePageTime episode:[NSNumber numberWithInteger:_currentIndex] albumId:[NSNumber numberWithInt:tempValue] albumName:self.model.name];
     [self postPlayRecord];
@@ -125,19 +125,35 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     _isFirstBuffer = YES;
     _isPop = YES;
     [self.navigationController.navigationBar setBarStyle:UIBarStyleDefault];
-
     self.view.backgroundColor = [UIColor whiteColor];
     self.currentIndex = 0;
-    self.ID ? [self requestModel] : [self requestData];
+    self.ID ? [self requestModel] : [self requestUserInfoData];
     [self setupPlayer];
     
     StorageHelper *instance = [StorageHelper sharedSingleClass];
     self.storageArray = instance.storageArray;
-    self.beginTime = [self getCurrentTime];
+    self.beginTime = [Tools getCurrentTime];
+}
+
+- (void) requestModel {
+    _requestModelBeginTime = [Tools getTimeStamp];
+    [SVProgressHUD showWithStatus:@"拼命加载中，请稍等"];
+    NSString *url = [NSString stringWithFormat:@"http://videocdn.chinesetvall.com/albums/%@/?format=json",self.ID];
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
+    [manager GET:url parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
+        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
+        self.model = [HomeModel modelWithDictionary:dic];
+        [self requestUserInfoData];
+        [self postTimeWithEvent:@"1000106002" successCode:@1];
+    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
+        [self postTimeWithEvent:@"1000106002" successCode:@0];
+        [SVProgressHUD showWithStatus:@"请检查网络"];
+    }];
 }
 
 /**请求用户相关信息：是否收藏和播放记录**/
-- (void) requestData {
+- (void) requestUserInfoData {
     NSDictionary *userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:@"userInfo"];
     BOOL isLogin = userInfo ? YES : NO;
     if (!isLogin) {
@@ -146,7 +162,6 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     }
     [SVProgressHUD showWithStatus:@"拼命加载中，请稍等"];
     [[PlayerUserRequest new] requestUserVideoInfoWithID:[NSString stringWithFormat:@"%@",self.model.ID] andBlock:^(PlayerUserRequest *responseData) {
-//        [SVProgressHUD dismiss];
         self.isCollected = responseData.isCollected;
         self.playHistory = responseData.playHistory;
     } andFilureBlock:^(PlayerUserRequest *responseData) {
@@ -158,9 +173,10 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     }];
     [self requestVimeoData];
 }
+
 /**请求viemeo接口**/
 - (void) requestVimeoData {
-    _requestVimeoBeginTime = [self getTimeStamp];
+    _requestVimeoBeginTime = [Tools getTimeStamp];
     _isLoadingData = YES;
     PlayerRequest *request = [PlayerRequest new];
     request.genre_id = self.model.genre_id;
@@ -171,7 +187,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     [SVProgressHUD showWithStatus:@"拼命加载中，请稍等"];
     [request requestVimeoPlayurl:^(PlayerRequest *responseData) {
         // 发送获取vimeo接口的请求时间
-        _requestVimeoEndTime = [self getTimeStamp];
+        _requestVimeoEndTime = [Tools getTimeStamp];
         int tempValue = [self.model.ID intValue];
         [UserActionRequest postDetailPageEventCode:@"1000106005" successCode:@1 beginTime:_requestVimeoBeginTime endTime:_requestVimeoEndTime episode:[NSNumber numberWithInteger:_currentIndex] albumId:[NSNumber numberWithInt:tempValue] albumName:self.model.name];
         
@@ -192,16 +208,8 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
             self.vimeoResponseDic = headView.vimeoResponseDic;
             self.vimeoResponseArray = headView.vimeoResponseArray;
             headView.delegate = self;
-            
-            BOOL isHaveInitTableView = false;
-            for ( UIView *view in self.view.subviews ) {
-                NSString *className = NSStringFromClass([view class]);
-                if ([className isEqualToString:@"UITableView"]) {
-                    isHaveInitTableView = true;
-                    break;
-                }
-            }
-            isHaveInitTableView ? [_tableView reloadData] : [self initTableView];
+            [self configTableViewDate];
+//            [self configHeaderView];
             [self setNewModel];
             [SVProgressHUD dismiss];
         } andFailureBlock:^(PlayerRequest *responseData) {
@@ -209,82 +217,117 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
             [SVProgressHUD dismissWithDelay:2];
         }];
     } andFailureBlock:^(PlayerRequest *responseData) {
-        if (!_requestVimeoEndTime) _requestVimeoEndTime = [self getTimeStamp]; // 防错处理
+        if (!_requestVimeoEndTime) _requestVimeoEndTime = [Tools getTimeStamp]; // 防错处理
         int tempValue = [self.model.ID intValue];
         [UserActionRequest postDetailPageEventCode:@"1000106005" successCode:@0 beginTime:_requestVimeoBeginTime endTime:_requestVimeoEndTime  episode:[NSNumber numberWithInteger:_currentIndex] albumId:[NSNumber numberWithInt:tempValue] albumName:self.model.name];
-        [SVProgressHUD showWithStatus:@"请求数据失败"];
         _isLoadingData = NO;
+        [SVProgressHUD showWithStatus:@"请求数据失败"];
         [SVProgressHUD dismissWithDelay:2];
     }];
+}
+
+/// 设置tableView的头视图
+- (void) configHeaderView {
+    self.headView.model = self.model;
+    _headView.selectedIndex = _currentIndex;
+    [_headView dealResponseData:self.VimeoRequest];
+    self.sectionOneHeight = _headView.headerInfoHeight;
+    self.vimeoResponseDic = _headView.vimeoResponseDic;
+    self.vimeoResponseArray = _headView.vimeoResponseArray;
+    self.headView.delegate = self;
+}
+
+/// 根据请求的结果，刷新、新建tableView
+- (void) configTableViewDate {
+    BOOL isHaveInitTableView = false;
+    for ( UIView *view in self.view.subviews ) {
+        NSString *className = NSStringFromClass([view class]);
+        if ([className isEqualToString:@"UITableView"]) {
+            isHaveInitTableView = true;
+            break;
+        }
+    }
+    isHaveInitTableView ? [_tableView reloadData] : [self initTableView];
 }
 
 /**设置播放的model**/
 /**当前只考虑默认进入页面，即index=0时，如果user选集的话另做考虑**/
 - (void) setNewModel {
-    BOOL isPay = ([[[NSUserDefaults standardUserDefaults] objectForKey:@"com.uu.VIP"] boolValue] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"com.uu.VIP499"] boolValue] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"com.uu.VIP199"] boolValue] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"com.uu.VIP299"] boolValue]);
+//    BOOL isPay = ([[[NSUserDefaults standardUserDefaults] objectForKey:@"com.uu.VIP"] boolValue] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"com.uu.VIP499"] boolValue] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"com.uu.VIP199"] boolValue] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"com.uu.VIP299"] boolValue]);
     //如果没有支付，就先不加载视频，而是去播放广告。等广告播放完毕再加载视频
-    if (!isPay) {
-//        [self loadNextAd]; //加载广告资源
-//        [_ad show]; // 加载广告
-        [self setModelUrl];
-    } else {
-        [self setModelUrl];
-    }
+//    if (!isPay) {
+//        // 加载广告
+//        [self setModelUrl];
+//    } else {
+//        [self setModelUrl];
+//    }
+    [self setModelUrl];
     [UIView animateWithDuration:0.3 animations:^{
         _bannerView.alpha = 1;
     }];
 }
 
 - (void) setModelUrl {
-    if (self.vimeoResponseDic) {
+    [self clearLastPlayerConfig];
+    if (self.vimeoResponseDic) { // 电影
         [self showNativeAds];
-        //判断是否已经播放过
-        if ([_playHistory isKindOfClass:[NSDictionary class]]) {
-            NSString *playedTimeStr = _playHistory[@"playbackProgress"];
-            [self.player seekToTime:[playedTimeStr integerValue] completionHandler:^(BOOL finished) {
-                
-            }];
-            _playHistory = nil;
-        }
-        NSURL *playerUrl = [self dealUrlWithFiles:self.vimeoResponseDic[@"files"] andDownload:self.vimeoResponseDic[@"download"]];
-        NSString *videoTitle = _vimeoResponseDic[@"name"];
-        self.player.assetURL = playerUrl;
-        [[PlayerRequest new] requestDefinitionWithArray:self.player.assetURL complement:^(BOOL isSuccess, NSArray *contentArray) {
-            NSLog(@"解析hls");
-        }];
-        
-        [self.controlView showTitle:videoTitle coverURLString:kVideoCover fullScreenMode:ZFFullScreenModeLandscape];
-        [self.player.currentPlayerManager play];
+        [self jsonPlayUrl:self.vimeoResponseDic];
     }
-    if (self.vimeoResponseArray.count > 0) {
+    if (self.vimeoResponseArray.count > 0) { // 电视剧
         [self showNativeAds];
         if ([_playHistory isKindOfClass:[NSDictionary class]]) {
             NSInteger historyIndex = [_playHistory[@"episodes"] integerValue];
             _currentIndex = historyIndex;
         }
         NSDictionary *currendDic = self.vimeoResponseArray[(int)_currentIndex];
-        //将当前剧集的所有url从大到小排列
-//        NSMutableArray *arr = [self dealUrlWidthWithFiles:currendDic[@"files"] andDownload:currendDic[@"download"]];
-//        self.playerModel.videoURL         = [NSURL URLWithString:[arr lastObject][@"link"]];
-        self.player.assetURL = [self dealUrlWithFiles:currendDic[@"files"] andDownload:currendDic[@"download"]];
-        [[PlayerRequest new] requestDefinitionWithArray:self.player.assetURL complement:^(BOOL isSuccess, NSArray *contentArray) {
-            NSLog(@"解析hls");
-        }];
-        
-        NSString *videoTitle = currendDic[@"name"];
-        [self.controlView showTitle:videoTitle coverURLString:kVideoCover fullScreenMode:ZFFullScreenModeLandscape];
-        [self.player.currentPlayerManager play];
+        [self jsonPlayUrl:currendDic];
     }
     // 如果数组和dic都为空，说明发生了错误，返回
     if (self.vimeoResponseArray.count < 1 && !self.vimeoResponseDic) {
         [ShowErrorAlert showErrorMeg:@"加载视频发生错误" withViewController:self finish:^{
             [[PushHelper new] popController:self WithNavigationController:self.navigationController andSetTabBarHidden:_isHideTabbar];
-
         }];
     }
-    _firstBufferStartTime = [self getTimeStamp];
+    //判断是否已经播放过
+    if ([_playHistory isKindOfClass:[NSDictionary class]]) {
+        NSString *playedTimeStr = _playHistory[@"playbackProgress"];
+        self.playerManager.seekTime = [playedTimeStr integerValue];
+        _playHistory = nil;
+    }
+    _firstBufferStartTime = [Tools getTimeStamp];
     _isFirstBuffer = YES;
     [self setListener];
+}
+
+/// 设置播放的url
+- (void) jsonPlayUrl:(NSDictionary *)itemDic {
+    self.urlsArray = [PlayerRequest dealUrlWithDownload:itemDic[@"download"]];
+    [self setDefaultLandScapeDefinition];
+    NSString *videoTitle = itemDic[@"name"];
+    self.player.assetURL = [_urlsArray[0] objectForKey:@"url"];
+    [self.controlView showTitle:videoTitle coverURLString:kVideoCover fullScreenMode:ZFFullScreenModeLandscape];
+    [self.player.currentPlayerManager play];
+}
+
+/// 设置清晰度
+- (void) setDefaultLandScapeDefinition {
+    self.controlView.landScapeControlView.definitionBtn.userInteractionEnabled = YES;
+    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:_urlsArray];
+    [tempArray insertObject:@{@"width":@"清晰度",@"url":@""} atIndex:0];
+    [self.controlView.landScapeControlView.definitionBtn setTitle:[tempArray[1] objectForKey:@"width"] forState:UIControlStateNormal];
+    self.controlView.landScapeControlView.definitionArray = (NSArray *)tempArray;
+}
+
+/// 清除清晰度数组
+- (void) clearLandScapeDefinition {
+    self.controlView.landScapeControlView.definitionBtn.userInteractionEnabled = NO;
+    self.controlView.landScapeControlView.definitionArray = [NSArray array];
+}
+
+/// 清除上一次的选中清晰度、播放进度
+- (void) clearLastPlayerConfig {
+    self.playerManager.rate = 1;
+    [_controlView.landScapeControlView clearSelectStyle];
 }
 
 - (void) setListener {
@@ -292,7 +335,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     _player.playerPrepareToPlay = ^(id<ZFPlayerMediaPlayback>  _Nonnull asset, NSURL * _Nonnull assetURL) {
         @strongify(self);
         if (self.isFirstBuffer) {
-            _firstBufferEndTime = [self getTimeStamp];
+            _firstBufferEndTime = [Tools getTimeStamp];
             int tempValue = [self.model.ID intValue];
             [UserActionRequest postDetailPageEventCode:@"1000106006" successCode:@1 beginTime:self.firstBufferStartTime endTime:self.firstBufferEndTime  episode:[NSNumber numberWithInteger:self.currentIndex] albumId:[NSNumber numberWithInt:tempValue] albumName:self.model.name];
             _isFirstBuffer = NO;
@@ -302,16 +345,16 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
 //        NSLog(@"loadStateChanged -- %lu",(unsigned long)loadState);
         @strongify(self);
         if (loadState == ZFPlayerLoadStatePlayable) { // 缓冲结束
-            _nextBufferEndTime = [self getTimeStamp];
+            _nextBufferEndTime = [Tools getTimeStamp];
             [self addBuffer];
         }
         else if (loadState == ZFPlayerLoadStateStalled) { // 开始缓冲
-            self.nextBufferStartTime = [self getTimeStamp];
+            self.nextBufferStartTime = [Tools getTimeStamp];
         }
     };
     _player.playerPlayFailed = ^(id<ZFPlayerMediaPlayback>  _Nonnull asset, id  _Nonnull error) {
         @strongify(self);
-        self.firstBufferEndTime = [self getTimeStamp];
+        self.firstBufferEndTime = [Tools getTimeStamp];
         int tempValue = [self.model.ID intValue];
         [UserActionRequest postDetailPageEventCode:@"1000106006" successCode:@0 beginTime:self.firstBufferStartTime endTime:self.firstBufferEndTime  episode:[NSNumber numberWithInteger:self.currentIndex] albumId:[NSNumber numberWithInt:tempValue] albumName:self.model.name];
         self.isFirstBuffer = YES;
@@ -533,12 +576,13 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
         btn.selected = YES;
         return;
     }
+    [self clearLastPlayerConfig];
+    [self clearLandScapeDefinition];
     _currentIndex = index;
     btn.selected = YES;
     
     [self sendBuffer]; // 发送缓存次数和对应的时间
     [self showNativeAds];
-#pragma mark 播放记录
     [UIView animateWithDuration:0.3 animations:^{
         _bannerView.alpha = 1;
     }];
@@ -546,21 +590,14 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     
     //不能通过 [self setNewModel]; 方法来设置，因为[self setNewModel];方法里面有判断是否存在播放历史
     NSDictionary *currendDic = self.vimeoResponseArray[(int)_currentIndex];
-    self.player.assetURL = [self dealUrlWithFiles:currendDic[@"files"] andDownload:currendDic[@"download"]];
+    self.urlsArray = [PlayerRequest dealUrlWithDownload:currendDic[@"download"]];
+    [self setDefaultLandScapeDefinition];
+    self.player.assetURL = [_urlsArray[0] objectForKey:@"url"];
     NSString *videoTitle = currendDic[@"name"];
     [self.controlView showTitle:videoTitle coverURLString:kVideoCover fullScreenMode:ZFFullScreenModeLandscape];
     [self.player.currentPlayerManager play];
-    _firstBufferStartTime = [self getTimeStamp];
+    _firstBufferStartTime = [Tools getTimeStamp];
     _isFirstBuffer = YES;
-}
-
-- (NSString *) getCurrentTime{
-    //获取当前时间
-    NSDate *now = [NSDate date];
-    //创建日期格式
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];// 创建一个时间格式化对象
-    [dateFormatter setDateFormat:@"YYYY-MM-dd HH:mm:ss"]; //设定时间的格式
-    return [dateFormatter stringFromDate:now];
 }
 
 - (void) setupPlayer {
@@ -589,11 +626,6 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
             [self.player stop];
         }
     };
-}
-
-- (void) playCurrentVideo {
-    self.player = [ZFPlayerController playerWithPlayerManager:_playerManager containerView:self.containerView];
-    [_player.currentPlayerManager play];
 }
 
 #pragma mark -- Player相关属性
@@ -646,8 +678,8 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     NSString *albumTitle = self.model.name;
     NSNumber *albumCategory = self.model.genre_id;
     NSNumber *episodes = _currentIndex ? [NSNumber numberWithInteger:_currentIndex] : @0;
-    NSNumber *startTime = _firstBufferEndTime ? _firstBufferEndTime : [self getTimeStamp];
-    NSNumber *endTime = [self getTimeStamp];
+    NSNumber *startTime = _firstBufferEndTime ? _firstBufferEndTime : [Tools getTimeStamp];
+    NSNumber *endTime = [Tools getTimeStamp];
     NSDictionary *params = @{@"deviceId":deviceId,
                              @"albumId":albumId,
                              @"albumTitle":albumTitle,
@@ -718,6 +750,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     if (self.headView) {
         return _headView;
     }
+//    [self configHeaderView];
     self.headView = [PlayerCollectionReusableView new];
     _headView.model = self.model;
     _headView.selectedIndex = _currentIndex;
@@ -764,6 +797,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
 //点中cell的相应事件
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [self clearLandScapeDefinition];
     if (_isLoadingData) {
         [ShowErrorAlert showSuccessWithMsg:@"小主，稍等哦，数据还在加载中" withViewController:self finish:^{
             
@@ -797,7 +831,6 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
         PurchaseViewController *vc = [PurchaseViewController new];
         vc.isHideTab = YES;
         [self.navigationController pushViewController:vc animated:YES];
-        
         return;
     }
     self.model = model;
@@ -806,31 +839,13 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     _vimeoResponseDic = nil;
     _vimeoResponseArray = nil;
     self.currentIndex = 0;
-    [self requestData];
+    [self requestUserInfoData];
 }
 
-
-- (void) requestModel {
-    _requestModelBeginTime = [self getTimeStamp];
-    
-    [SVProgressHUD showWithStatus:@"拼命加载中，请稍等"];
-    NSString *url = [NSString stringWithFormat:@"http://videocdn.chinesetvall.com/albums/%@/?format=json",self.ID];
-    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    manager.responseSerializer = [AFHTTPResponseSerializer serializer];
-    [manager GET:url parameters:nil progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-        self.model = [HomeModel modelWithDictionary:dic];
-        [self requestData];
-        [self postTimeWithEvent:@"1000106002" successCode:@1];
-    } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        [self postTimeWithEvent:@"1000106002" successCode:@0];
-        [SVProgressHUD showWithStatus:@"请检查网络"];
-    }];
-}
 
 // 统计当前根据ID获取的数据时间
 - (void) postTimeWithEvent:(NSString *)eventCode successCode:(NSNumber *)successCodeNum {
-    _requestModelEndTime = [self getTimeStamp];
+    _requestModelEndTime = [Tools getTimeStamp];
     int vimeoID = [self.model.ID intValue];
     [UserActionRequest postDetailPageEventCode:eventCode successCode:successCodeNum beginTime:_requestModelBeginTime endTime:_requestModelEndTime  episode:[NSNumber numberWithInteger:_currentIndex] albumId:[NSNumber numberWithInt:vimeoID] albumName:self.model.name];
 }
@@ -841,9 +856,9 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     if (self.model.genre_id.integerValue == 3) {//电影
         urlString = [NSString stringWithFormat:@"http://share.chinesetvall.com/#/movie?id=%@",_model.ID];
     } else if (self.model.genre_id.integerValue == 4) {//综艺
-        urlString = [NSString stringWithFormat:@"http://share.chinesetvall.com/#/variety?id=%@&index=%ld",_model.ID,_currentIndex];
+        urlString = [NSString stringWithFormat:@"http://share.chinesetvall.com/#/variety?id=%@&index=%ld",_model.ID,(long)_currentIndex];
     } else {
-        urlString = [NSString stringWithFormat:@"http://share.chinesetvall.com/#/?id=%@&index=%ld",_model.ID,_currentIndex];
+        urlString = [NSString stringWithFormat:@"http://share.chinesetvall.com/#/?id=%@&index=%ld",_model.ID,(long)_currentIndex];
     }
     NSDictionary *params = @{@"title":_model.name,@"shareURL":urlString};
     [self.shareView setViewWithTitles:@[@"分享到Facebook",@"复制链接"] imgs:@[[UIImage imageNamed:@"facebook"],[UIImage imageNamed:@"link"]] shareParams:params];
@@ -911,67 +926,6 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
         AutoDismissAlert *alert = [[AutoDismissAlert alloc] initWithTitle:@"收藏网络发生错误"];
         [alert show:nil];
     }];
-}
-
-- (NSURL *) dealUrlWithFiles:(NSArray *)filesArray andDownload:(NSArray *)downloadsArray {
-//    NSMutableArray *tempArray = [NSMutableArray arrayWithArray:filesArray];
-//    for (int i = 0; i < tempArray.count; i++) {
-//        if ([[tempArray[i] objectForKey:@"quality"] isEqualToString:@"hls"]) {
-//            [tempArray removeObject:tempArray[i]];
-//        }
-//    }
-//    [tempArray sortUsingComparator:^NSComparisonResult(id _Nonnull obj1, id _Nonnull obj2)
-//     {
-//         //此处的规则含义为：若前一元素比后一元素小，则返回降序（即后一元素在前，为从大到小排列）
-//         if ([obj1[@"height"] integerValue] > [obj2[@"height"] integerValue]){
-//             return NSOrderedDescending;
-//         } else {
-//             return NSOrderedAscending;
-//         }
-//     }];
-//    int count = (int)tempArray.count / 2;
-//    return [NSURL URLWithString:[tempArray[count] objectForKey:@"link"]];
-    
-    
-    for (int i = 0; i < filesArray.count; i++) {
-        PlayerModel *model = [PlayerModel modelWithDictionary:filesArray[i]];
-        if ([model.quality isEqualToString:@"hls"]) {
-            return [NSURL URLWithString:model.link];
-        }
-    }
-    for (int i = 0; i < downloadsArray.count; i++) {
-        PlayerModel *model = [PlayerModel modelWithDictionary:downloadsArray[i]];
-        if ([model.quality isEqualToString:@"hls"]) {
-            return [NSURL URLWithString:model.link];
-        }
-    }
-    if (filesArray.count) {
-        return [NSURL URLWithString:[filesArray[0] objectForKey:@"link"]];
-    }
-    return [NSURL URLWithString:[downloadsArray[0] objectForKey:@"link"]];
-}
-
-//将剧集排序
-- (NSMutableArray *) dealUrlWidthWithFiles:(NSArray *)filesArray andDownload:(NSArray *)downloadsArray {
-    NSMutableArray *tempArray = [NSMutableArray arrayWithCapacity:0];
-    for (int i = 0; i<filesArray.count; i++) {
-        PlayerModel *model = filesArray[i];
-        [tempArray addObject:model];
-    }
-    for (int i = 0; i<downloadsArray.count; i++) {
-        PlayerModel *model = downloadsArray[i];
-        [tempArray addObject:model];
-    }
-    [tempArray sortUsingComparator:^NSComparisonResult(id _Nonnull obj1, id _Nonnull obj2)
-     {
-         //此处的规则含义为：若前一元素比后一元素小，则返回降序（即后一元素在前，为从大到小排列）
-         if ([obj1[@"size"] integerValue] < [obj2[@"size"] integerValue]){
-             return NSOrderedDescending;
-         } else {
-             return NSOrderedAscending;
-         }
-     }];
-    return tempArray;
 }
 
 - (void) dismissShareView {
@@ -1046,13 +1000,6 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     }];
 }
 
-- (NSNumber *)getTimeStamp {
-    NSDate* date = [NSDate dateWithTimeIntervalSinceNow:0];//获取当前时间0秒后的时间
-    NSTimeInterval time=[date timeIntervalSince1970]*1000;// *1000 是精确到毫秒，不乘就是精确到秒
-    NSString *timeString = [NSString stringWithFormat:@"%.0f", time];
-    return [NSNumber numberWithInteger:timeString.integerValue];
-}
-
 #pragma mark setter
 - (GADBannerView *)bannerView {
     if (!_bannerView) {
@@ -1090,6 +1037,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     if (!_controlView) {
         _controlView = [ZFPlayerControlView new];
         _controlView.landScapeControlView.tempViewController = self.navigationController;
+        _controlView.landScapeControlView.definitionBtn.userInteractionEnabled = NO;
         _controlView.landScapeControlView.delegate = self;
         _controlView.fastViewAnimated = YES;
         [_controlView.portraitControlView.backBtn addTarget:self action:@selector(popToLastPage) forControlEvents:UIControlEventTouchUpInside];
@@ -1097,17 +1045,20 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     return _controlView;
 }
 
+# pragma mark 清晰度、倍速选择回调
 - (void) selectedIndex:(NSInteger)index withConfigType:(ConfigType)type {
     if (type == rateType) { // 改变的播放速率
-        NSArray *tempArr = @[@"播放倍速",@"1.0X",@"1.25",@"1.5X",@"2.0X"];
+        NSArray *tempArr = @[@"播放倍速",@"1.0X",@"1.25X",@"1.5X",@"2.0X"];
         [_controlView.landScapeControlView.rateBtn setTitle:tempArr[index] forState:UIControlStateNormal];
-        float rate = 1 + (index - 1)*0.5;
-        self.playerManager.rate = rate;
+        self.playerManager.rate = [tempArr[index] floatValue];
     } else { // 改变清晰度
-        
+        NSDictionary *tempDic = self.controlView.landScapeControlView.definitionArray[index];
+        NSTimeInterval time = self.playerManager.currentTime;
+        self.playerManager.seekTime = time;
+        self.player.assetURL = tempDic[@"url"];
+        [_controlView.landScapeControlView.definitionBtn setTitle:tempDic[@"width"] forState:UIControlStateNormal];
     }
 }
-
 
 - (UIImageView *)containerView {
     if (!_containerView) {
@@ -1128,6 +1079,13 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     return _containerView;
 }
 
+//- (PlayerCollectionReusableView *)headView {
+//    if (!_headView) {
+//        _headView = [PlayerCollectionReusableView new];
+//    }
+//    return _headView;
+//}
+
 - (NSArray *)storageArray {
     if (_storageArray == nil) {
         _storageArray = [NSArray array];
@@ -1142,5 +1100,11 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     return _buffersArray;
 }
 
+- (NSArray *)urlsArray {
+    if (!_urlsArray) {
+        _urlsArray = [NSArray array];
+    }
+    return _urlsArray;
+}
 
 @end

@@ -37,6 +37,8 @@ typedef void (^vimeoResponseBlock)(PlayerRequest *responseData);
 - (void) requestVimeoPlayurl:(vimeoResponseBlock)block andFailureBlock:(vimeoResponseBlock)failureBlock;
 
 /** 将hls流切割成对应的清晰度数组 **/
-- (void) requestDefinitionWithArray:(NSURL *)url complement:(void(^)(BOOL isSuccess,NSArray *contentArray))complement;
+//- (void) requestDefinitionWithArray:(NSURL *)url complement:(void(^)(BOOL isSuccess,NSArray *contentArray))complement;
+
++ (NSArray *) dealUrlWithDownload:(NSArray *)downloadsArray;
 
 @end

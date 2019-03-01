@@ -75,12 +75,16 @@ typedef NS_ENUM(NSInteger, ConfigType) {
 @property (nonatomic, strong) NSArray *definitionArray;
 /// 倍速、清晰度选择
 @property (nonatomic, strong) UITableView *configTableView;
-///
+///  倍速 / 清晰度
 @property (nonatomic, assign) ConfigType type;
 /// 用来控制动画消失
 @property (nonatomic, strong) UIViewController *tempViewController;
 ///
 @property (nonatomic, weak) id<SelectedConfigDelete>delegate;
+/// default 1
+@property (nonatomic, assign) NSInteger rateSelectedIndex;
+/// default 1
+@property (nonatomic, assign) NSInteger definitionSelectedIndex;
 
 /// 重置控制层
 - (void)resetControlView;
@@ -108,6 +112,8 @@ typedef NS_ENUM(NSInteger, ConfigType) {
 //- (void) showTableViewWithType:(ConfigType)type;
 /// 横屏时，倍速、清晰度的tableView消失
 - (void) dismissTableView;
+/// 清除上一次的倍速、清晰度
+- (void) clearSelectStyle;
 
 
 @end

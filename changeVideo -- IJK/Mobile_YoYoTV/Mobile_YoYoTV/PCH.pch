@@ -27,6 +27,7 @@
 #import "ShowToast.h"
 #import <Masonry/Masonry.h>
 #import <BlocksKit/BlocksKit+UIKit.h>
+#import "Tools.h"
 
 /************************* categorys *************************/
 #import "NSString+HW.h"

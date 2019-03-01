@@ -63,9 +63,9 @@
     return _titleLabel;
 }
 
-- (void)setDic:(NSDictionary *)dic {
-    self.titleLabel.text = [NSString stringWithFormat:@"%@",dic[@"config"]];
-}
+//- (void)setDic:(NSDictionary *)dic {
+//    self.titleLabel.text = [NSString stringWithFormat:@"%@",dic[@"config"]];
+//}
 
 @end
 
@@ -92,8 +92,6 @@
 
 @property (nonatomic, assign) BOOL isShow;
 
-@property (nonatomic, assign) NSInteger tableViewSelectedIndex;
-
 @end
 
 @implementation ZFLandScapeControlView
@@ -104,7 +102,8 @@
 
 - (instancetype)initWithFrame:(CGRect)frame {
     if (self = [super initWithFrame:frame]) {
-        _tableViewSelectedIndex = 1;
+        _rateSelectedIndex = 1;
+        _definitionSelectedIndex = 1;
         
         [self addSubview:self.topToolView];
         [self.topToolView addSubview:self.backBtn];
@@ -390,17 +389,16 @@
     self.bottomToolView.alpha        = 1;
 }
 
-/// 展示tableview
+/// show tableView
 - (void) showTableViewWithType:(UIButton *)btn {
     _type = btn.tag - 1000;
-//    if (!_configTableView) {
-        [self addSubview:self.configTableView];
-//    }
+    [self addSubview:self.configTableView];
     self.configTableView.frame = CGRectMake(self.bounds.size.width, 0, self.bounds.size.width*0.3, self.bounds.size.height);
     [self hideControlView];
     [UIView animateWithDuration:0.4 delay:0 usingSpringWithDamping:0.95 initialSpringVelocity:0.05 options:UIViewAnimationOptionCurveEaseInOut animations:^{
         self.configTableView.alpha = 1.0f ;
         self.configTableView.frame = CGRectMake(self.bounds.size.width*0.7, 0, self.bounds.size.width*0.3, self.bounds.size.height);
+        [self.configTableView reloadData];
     } completion:^(BOOL finished) {
     }];
 }
@@ -418,15 +416,28 @@
     }];
 }
 
+- (void)clearSelectStyle {
+    _rateSelectedIndex = 1;
+    _definitionSelectedIndex = 1;
+    [self.rateBtn setTitle:@"1.0X" forState:UIControlStateNormal];
+//    [self.definitionBtn setTitle:[self.definitionArray[0] objectForKey:@"width"] forState:UIControlStateNormal];
+}
+
+#pragma mark UITableViewDelegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     // 第一个是title
     if (indexPath.row == 0) return;
     // 清除之前的选中label
-    NSIndexPath *lastIndexPath = [NSIndexPath indexPathForItem:_tableViewSelectedIndex inSection:0];
+    NSInteger currentTypeIndex = self.type == rateType ? _rateSelectedIndex : _definitionSelectedIndex;
+    NSIndexPath *lastIndexPath = [NSIndexPath indexPathForItem:currentTypeIndex inSection:0];
     ConfigCell *lastCell = [_configTableView cellForRowAtIndexPath:lastIndexPath];
     lastCell.titleLabel.textColor = [UIColor whiteColor];
     // 设置选中状态
-    _tableViewSelectedIndex = indexPath.row;
+    if (_type == rateType) {
+        _rateSelectedIndex = indexPath.row;
+    } else {
+        _definitionSelectedIndex = indexPath.row;
+    }
     ConfigCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     cell.titleLabel.textColor = [UIColor colorWithHexString:@"0BBF06"];
     if ([self.delegate respondsToSelector:@selector(selectedIndex:withConfigType:)]) {
@@ -441,14 +452,25 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     ConfigCell *cell = [tableView dequeueReusableCellWithIdentifier:@"ConfigCell" forIndexPath:indexPath];
-    if (indexPath.row == _tableViewSelectedIndex) {
-        cell.titleLabel.textColor = [UIColor colorWithHexString:@"0BBF06"];
-    } else {
-        cell.titleLabel.textColor = [UIColor whiteColor];
-    }
     cell.backgroundColor = shadowColor;
     cell.selectionStyle = UITableViewCellSelectionStyleNone;
-    self.type == rateType ? cell.dic = self.rateArray[indexPath.row] : self.definitionArray[indexPath.row];
+    if (self.type == rateType) {
+        if (indexPath.row == _rateSelectedIndex) {
+            cell.titleLabel.textColor = [UIColor colorWithHexString:@"0BBF06"];
+        } else {
+            cell.titleLabel.textColor = [UIColor whiteColor];
+        }
+        cell.dic = self.rateArray[indexPath.row];
+        cell.titleLabel.text = cell.dic[@"config"];
+    } else {
+        if (indexPath.row == _definitionSelectedIndex) {
+            cell.titleLabel.textColor = [UIColor colorWithHexString:@"0BBF06"];
+        } else {
+            cell.titleLabel.textColor = [UIColor whiteColor];
+        }
+        cell.dic = self.definitionArray[indexPath.row];
+        cell.titleLabel.text = cell.dic[@"width"];
+    }
     return cell;
 }
 
@@ -484,7 +506,7 @@
 - (NSArray *)rateArray {
     if (!_rateArray) {
         NSMutableArray *datas = [NSMutableArray arrayWithCapacity:0];
-        NSArray *tempArr = @[@"播放倍速",@"1.0X",@"1.25",@"1.5X",@"2.0X"];
+        NSArray *tempArr = @[@"播放倍速",@"1.0X",@"1.25X",@"1.5X",@"2.0X"];
         for (int i = 0; i < tempArr.count; i++) {
             NSMutableDictionary *dic = [NSMutableDictionary dictionary];
             [dic setValue:tempArr[i] forKey:@"config"];
