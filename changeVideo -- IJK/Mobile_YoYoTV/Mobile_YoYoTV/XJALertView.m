@@ -97,7 +97,6 @@
         self.alpha = 0.5;
     }];
     [window addSubview:_btnBack];
-    
     [_btnBack mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self);
         make.right.equalTo(self);
@@ -109,14 +108,15 @@
     [UIView animateWithDuration:0.3 animations:^{
         self.btnBack.transform = CGAffineTransformMakeTranslation(0.01, 0.01);
     }];
-    
 }
 
 - (void)dismissAlert {
     [UIView animateWithDuration:0.3 animations:^{
         self.btnBack.transform = CGAffineTransformMakeTranslation(0.01, ScreenWidth);
-        self.btnBack.alpha = 0.2;
-        self.alpha = 0;
+//        self.btnBack.alpha = 0.2;
+        self.btnBack.backgroundColor = [UIColor whiteColor];
+//        self.alpha = 0;
+        self.alpha = 0.3;
     } completion:^(BOOL finished) {
         [self removeFromSuperview];
         [self.btnBack removeFromSuperview];

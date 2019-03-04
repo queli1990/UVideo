@@ -206,6 +206,7 @@
 		004ECE091FE3B8D3004F5846 /* gradient.png in Resources */ = {isa = PBXBuildFile; fileRef = 004ECE081FE3B8D3004F5846 /* gradient.png */; };
 		0059B164218B006A00A5F5DD /* PlayerNativeAdsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0059B163218B006A00A5F5DD /* PlayerNativeAdsView.m */; };
 		005C99DB2227D81F00302785 /* Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 005C99DA2227D81F00302785 /* Tools.m */; };
+		005C99DE222D081200302785 /* MainHomeModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 005C99DD222D081200302785 /* MainHomeModel.m */; };
 		007127FC2142761B00246FB0 /* ShareView.m in Sources */ = {isa = PBXBuildFile; fileRef = 007127FB2142761B00246FB0 /* ShareView.m */; };
 		007127FF2142797C00246FB0 /* ShareTypeButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 007127FE2142797C00246FB0 /* ShareTypeButton.m */; };
 		0071280721427CC100246FB0 /* facebook@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 0071280121427CB800246FB0 /* facebook@2x.png */; };
@@ -689,6 +690,8 @@
 		0059B163218B006A00A5F5DD /* PlayerNativeAdsView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PlayerNativeAdsView.m; sourceTree = "<group>"; };
 		005C99D92227D81F00302785 /* Tools.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Tools.h; sourceTree = "<group>"; };
 		005C99DA2227D81F00302785 /* Tools.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tools.m; sourceTree = "<group>"; };
+		005C99DC222D081200302785 /* MainHomeModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainHomeModel.h; sourceTree = "<group>"; };
+		005C99DD222D081200302785 /* MainHomeModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainHomeModel.m; sourceTree = "<group>"; };
 		007127FA2142761B00246FB0 /* ShareView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareView.h; sourceTree = "<group>"; };
 		007127FB2142761B00246FB0 /* ShareView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShareView.m; sourceTree = "<group>"; };
 		007127FD2142797C00246FB0 /* ShareTypeButton.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShareTypeButton.h; sourceTree = "<group>"; };
@@ -1137,6 +1140,8 @@
 				001DC2A81EB9ACBD00AEC03D /* HomeModel.m */,
 				001A6C2B1EC95ACE00C408E2 /* Home_head_model.h */,
 				001A6C2C1EC95ACE00C408E2 /* Home_head_model.m */,
+				005C99DC222D081200302785 /* MainHomeModel.h */,
+				005C99DD222D081200302785 /* MainHomeModel.m */,
 				003C0CC31ED56EA5004C2C6A /* GenresModel.h */,
 				003C0CC41ED56EA5004C2C6A /* GenresModel.m */,
 				009E42F41ED6C60400DF39F0 /* SearchResultModel.h */,
@@ -2014,7 +2019,7 @@
 						CreatedOnToolsVersion = 8.3.1;
 						DevelopmentTeam = WU684BRQRT;
 						LastSwiftMigration = 1010;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 					001DC26A1EB8663600AEC03D = {
 						CreatedOnToolsVersion = 8.3.1;
@@ -2417,6 +2422,7 @@
 				002D6AED21A6AB6800BADF5C /* FMDatabaseAdditions.m in Sources */,
 				00144D6B1FC5461600065602 /* ChannelsViewController.m in Sources */,
 				002D6AFA21A6AB6800BADF5C /* MJFoundation.m in Sources */,
+				005C99DE222D081200302785 /* MainHomeModel.m in Sources */,
 				00D707831FD534A800BB9D99 /* DeleteFooterView.m in Sources */,
 				009601B021AEA21A001BE083 /* WatchDownloadVideoViewController.m in Sources */,
 				00DC76141EC1C1A90036566D /* HomeFootCollectionReusableView.m in Sources */,
@@ -2632,8 +2638,8 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = WU684BRQRT;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2738,7 +2744,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.movies.mobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = video;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Mobile_YoYoTV/Mobile_YoYoTV-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
@@ -2756,8 +2762,8 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = WU684BRQRT;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -2862,7 +2868,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.movies.mobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = videoComplete;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "Mobile_YoYoTV/Mobile_YoYoTV-Bridging-Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.2;

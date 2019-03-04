@@ -11,7 +11,7 @@
 @implementation SearchResultRequest
 
 - (id)requestData:(NSDictionary *)params andBlock:(httpResponseBlock)block andFailureBlock:(httpResponseBlock)failureBlock {
-    NSString *urlSuffix_str = [NSString stringWithFormat:@"/albums/?format=json&search=%@&page=1&page_size=50",self.keyword];
+    NSString *urlSuffix_str = [NSString stringWithFormat:@"/albumsearch/?format=json&search=%@&page=1&page_size=50",self.keyword];
     [self baseGetRequest:params andTransactionSuffix:urlSuffix_str andBlock:^(GetBaseHttpRequest *responseData) {
         [self jsonArray:responseData._data];
         block(self);

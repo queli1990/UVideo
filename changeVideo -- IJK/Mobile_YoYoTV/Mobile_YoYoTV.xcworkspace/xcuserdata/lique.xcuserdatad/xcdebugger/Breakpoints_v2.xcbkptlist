@@ -51,134 +51,6 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "../../&#x4f18;&#x4f18;work-4.16/&#x624b;&#x673a;&#x7aef;&#x7528;&#x5230;&#x7684;&#x4e09;&#x65b9;&#x5e93;/ZFPlayer-master 2/ZFPlayer/Classes/ijkplayer/ZFIJKPlayerManager.m"
-            timestampString = "570005380.382275"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "143"
-            endingLineNumber = "143"
-            landmarkName = "-thumbnailImageAtCurrentTime"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../&#x4f18;&#x4f18;work-4.16/&#x624b;&#x673a;&#x7aef;&#x7528;&#x5230;&#x7684;&#x4e09;&#x65b9;&#x5e93;/ZFPlayer-master 2/ZFPlayer/Classes/AVPlayer/ZFAVPlayerManager.m"
-            timestampString = "568725308.479062"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "147"
-            endingLineNumber = "147"
-            landmarkName = "-reloadPlayer"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../&#x4f18;&#x4f18;work-4.16/&#x624b;&#x673a;&#x7aef;&#x7528;&#x5230;&#x7684;&#x4e09;&#x65b9;&#x5e93;/ZFPlayer-master 2/ZFPlayer/Classes/AVPlayer/ZFAVPlayerManager.m"
-            timestampString = "568725308.479135"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "137"
-            endingLineNumber = "137"
-            landmarkName = "-prepareToPlay"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../&#x4f18;&#x4f18;work-4.16/&#x624b;&#x673a;&#x7aef;&#x7528;&#x5230;&#x7684;&#x4e09;&#x65b9;&#x5e93;/ZFPlayer-master 2/ZFPlayer/Classes/AVPlayer/ZFAVPlayerManager.m"
-            timestampString = "568725308.4792089"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "253"
-            endingLineNumber = "253"
-            landmarkName = "-initializePlayer"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../&#x4f18;&#x4f18;work-4.16/&#x624b;&#x673a;&#x7aef;&#x7528;&#x5230;&#x7684;&#x4e09;&#x65b9;&#x5e93;/ZFPlayer-master 2/ZFPlayer/Classes/AVPlayer/ZFAVPlayerManager.m"
-            timestampString = "568725308.47927"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "151"
-            endingLineNumber = "151"
-            landmarkName = "-play"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../&#x4f18;&#x4f18;work-4.16/&#x624b;&#x673a;&#x7aef;&#x7528;&#x5230;&#x7684;&#x4e09;&#x65b9;&#x5e93;/ZFPlayer-master 2/ZFPlayer/Classes/AVPlayer/ZFAVPlayerManager.m"
-            timestampString = "568725308.4793431"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "360"
-            endingLineNumber = "360"
-            landmarkName = "-observeValueForKeyPath:ofObject:change:context:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "../../&#x4f18;&#x4f18;work-4.16/&#x624b;&#x673a;&#x7aef;&#x7528;&#x5230;&#x7684;&#x4e09;&#x65b9;&#x5e93;/ZFPlayer-master 2/ZFPlayer/Classes/ijkplayer/ZFIJKPlayerManager.m"
-            timestampString = "570005380.383175"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "214"
-            endingLineNumber = "214"
-            landmarkName = "-moviePlayBackFinish:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Mobile_YoYoTV/PerDownloadViewController.m"
-            timestampString = "572924148.046321"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "569"
-            endingLineNumber = "569"
-            landmarkName = "-selectedBtn:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Mobile_YoYoTV/NineBoxDownloadBtn.m"
             timestampString = "572412777.605211"
             startingColumnNumber = "9223372036854775807"
@@ -195,61 +67,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Mobile_YoYoTV/ZFPlayer--&#x4ee3;&#x7801;&#x5e93;&#x5907;&#x4efd;/Classes/KSYMediaPlayer/KSMediaPlayerManager.m"
-            timestampString = "573029008.418074"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "263"
-            endingLineNumber = "263"
-            landmarkName = "-videoFinish:"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "Mobile_YoYoTV/PlayerViewController.m"
-            timestampString = "573106923.275202"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "213"
-            endingLineNumber = "213"
-            landmarkName = "-requestVimeoData"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Mobile_YoYoTV/PlayerViewController.m"
-            timestampString = "573106923.2814341"
+            timestampString = "573393372.038478"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "234"
             endingLineNumber = "234"
             landmarkName = "-configHeaderView"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Mobile_YoYoTV/PlayerViewController.m"
-            timestampString = "573106923.281739"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "794"
-            endingLineNumber = "794"
-            landmarkName = "-tableView:heightForHeaderInSection:"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

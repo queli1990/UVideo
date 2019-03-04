@@ -13,8 +13,8 @@
 @property (nonatomic,strong) NSNumber *ID;
 @property (nonatomic,strong) NSNumber *genre_id;
 @property (nonatomic,copy) NSString *name;
-@property (nonatomic,copy) NSString *image_normal;
-@property (nonatomic,copy) NSString *image_focus;
+//@property (nonatomic,copy) NSString *image_normal;
+//@property (nonatomic,copy) NSString *image_focus;
 
 + (GenresModel *)modelWithDictionary:(NSDictionary *) dictionary;
 + (NSArray *) modelsWithArray:(NSArray *) array;

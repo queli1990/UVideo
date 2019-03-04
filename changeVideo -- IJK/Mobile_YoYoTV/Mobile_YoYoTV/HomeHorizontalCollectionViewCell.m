@@ -63,31 +63,12 @@
     return self;
 }
 
-- (void)setModel:(HomeModel *)model {
+- (void)setModel:(MainHomeModel *)model {
     _model = model;
     _titleLabel.text = model.name;
     _subLabel.text = model.subtitle.length ? model.subtitle: model.Description;
-//    _subLabel.text = @"这是一个少年和他的小伙伴们的逆袭少时诵诗书所";
-    
-    
-    if (model.genre_id.integerValue == 3) { //电影
-        _totalEpisodeLabel.textColor = UIColorFromRGB(0xE83A00, 1.0);
-        _totalEpisodeLabel.text = model.score;
-//        _totalEpisodeLabel.text = @"9.0";
-    } else if (model.genre_id.integerValue == 4) { //综艺
-        _totalEpisodeLabel.textColor = UIColorFromRGB(0xFFFFFF, 1.0);
-        _totalEpisodeLabel.text = model.update_progress;
-//        _totalEpisodeLabel.text = @"20180809期";
-    } else { // 电视剧
-        _totalEpisodeLabel.textColor = UIColorFromRGB(0xFFFFFF, 1.0);
-        _totalEpisodeLabel.text = model.update_progress;
-//        _totalEpisodeLabel.text = @"更新至68集";
-    }
-    
-    
-//    if (model.attribute == nil) {
-//        model.attribute = @"1080P";
-//    }
+    _totalEpisodeLabel.textColor = UIColorFromRGB(0xFFFFFF, 1.0);
+    _totalEpisodeLabel.text = model.update_progress;
     
     if (model.attributes.length <= 0) {
         _attributeLabel.hidden = YES;
@@ -98,13 +79,8 @@
     UIFont *font = [UIFont fontWithName:@"PingFangSC-Regular" size:11.0];
     CGSize labelSize = [model.attributes sizeWithAttributes:[NSDictionary dictionaryWithObjectsAndKeys:font,NSFontAttributeName, nil]];
     _attributeLabel.frame = CGRectMake(_sumImageView.frame.size.width-labelSize.width-12-10, 0, labelSize.width+12, 16);
-    if (model.pay) {
-        _attributeLabel.backgroundColor = UIColorFromRGB(0xE83A00, 1.0);
-        _attributeLabel.text = @"VIP";
-    } else {
-        _attributeLabel.backgroundColor = UIColorFromRGB(0xFF8000, 1.0);
-        _attributeLabel.text = model.attributes;
-    }
+    _attributeLabel.backgroundColor = UIColorFromRGB(0xFF8000, 1.0);
+    _attributeLabel.text = model.attributes;
 
     NSString *urlString = [model.landscape_poster_s stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> "].invertedSet];
     [self.sumImageView sd_setImageWithURL:[NSURL URLWithString:urlString] placeholderImage:[UIImage imageNamed:@"placeholder_16_9"]];

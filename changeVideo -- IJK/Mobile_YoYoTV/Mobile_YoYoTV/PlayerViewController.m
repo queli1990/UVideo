@@ -130,8 +130,8 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     self.ID ? [self requestModel] : [self requestUserInfoData];
     [self setupPlayer];
     
-    StorageHelper *instance = [StorageHelper sharedSingleClass];
-    self.storageArray = instance.storageArray;
+//    StorageHelper *instance = [StorageHelper sharedSingleClass];
+//    self.storageArray = instance.storageArray;
     self.beginTime = [Tools getCurrentTime];
 }
 
@@ -1078,13 +1078,6 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     }
     return _containerView;
 }
-
-//- (PlayerCollectionReusableView *)headView {
-//    if (!_headView) {
-//        _headView = [PlayerCollectionReusableView new];
-//    }
-//    return _headView;
-//}
 
 - (NSArray *)storageArray {
     if (_storageArray == nil) {

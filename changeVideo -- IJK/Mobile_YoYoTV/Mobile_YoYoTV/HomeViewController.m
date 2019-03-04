@@ -23,7 +23,7 @@
 
 @interface HomeViewController () <UICollectionViewDelegate,UICollectionViewDataSource,UICollectionViewDelegateFlowLayout,HomeCirculationScrollViewDelegate,UIScrollViewDelegate>
 @property (nonatomic,strong) NSArray *storageArray;
-@property (nonatomic,strong) NSArray *headArray;
+@property (nonatomic,strong) NSArray<Home_head_model *> *headArray;
 @property (nonatomic,strong) NSMutableArray *contentArray;
 @property (nonatomic,strong) NSMutableArray *titleArray;
 @property (nonatomic,strong) NSMutableArray *titlesForList;
@@ -124,7 +124,7 @@
 
 //每个cell是什么
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
-    HomeModel *model = _contentArray[indexPath.section][indexPath.row];
+    MainHomeModel *model = _contentArray[indexPath.section][indexPath.row];
     HomeHorizontalCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"HomeHorizontalCollectionViewCell" forIndexPath:indexPath];
     cell.model = model;
     return cell;
@@ -207,41 +207,20 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     [collectionView deselectItemAtIndexPath:indexPath animated:YES];
-    HomeModel *model = _contentArray[indexPath.section][indexPath.row];
-    [self pushWithPay:model];
+    MainHomeModel *model = _contentArray[indexPath.section][indexPath.row];
+    PlayerViewController *vc = [[PlayerViewController alloc] init];
+    vc.ID = [NSString stringWithFormat:@"%@",model.ID];
+    [[PushHelper new] pushController:vc withOldController:self.navigationController andSetTabBarHidden:YES];
 }
 
 //滚动视图的代理方法
 - (void) didSecectedHomeCirculationScrollViewAnIndex:(NSInteger)currentpage{
-    HomeModel *model = _headArray[currentpage];
-    [self pushWithPay:model];
-}
-
-- (void) pushWithPay:(HomeModel *)model {
-    BOOL isPay = ([[[NSUserDefaults standardUserDefaults] objectForKey:@"com.uu.VIP"] boolValue] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"com.uu.VIP499"] boolValue] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"com.uu.VIP199"] boolValue] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"com.uu.VIP299"] boolValue]);
+    Home_head_model *model = _headArray[currentpage];
+    PlayerViewController *vc = [[PlayerViewController alloc] init];
+    vc.ID = [NSString stringWithFormat:@"%@",model.ID];
+    [[PushHelper new] pushController:vc withOldController:self.navigationController andSetTabBarHidden:YES];
     
-    if (!isPay && model.pay) {
-//        NSDictionary *dic = [[NSUserDefaults standardUserDefaults] objectForKey:@"userInfo"];
-//        BOOL isLogin = dic;
-//        if (isLogin) {
-//            PurchaseViewController *vc = [PurchaseViewController new];
-//            vc.isHideTab = NO;
-//            [[PushHelper new] pushController:vc withOldController:self.navigationController andSetTabBarHidden:YES];
-//        } else {
-//            LoginViewController *vc = [LoginViewController new];
-//            vc.isHide = NO;
-//            [[PushHelper new] pushController:vc withOldController:self.navigationController andSetTabBarHidden:YES];
-//        }
-        PurchaseViewController *vc = [PurchaseViewController new];
-        vc.isHideTab = NO;
-        [[PushHelper new] pushController:vc withOldController:self.navigationController andSetTabBarHidden:YES];
-    } else {
-        PlayerViewController *vc = [[PlayerViewController alloc] init];
-//        vc.model = model;
-        vc.ID = [NSString stringWithFormat:@"%@",model.ID];
-        vc.isHideTabbar = NO;
-        [[PushHelper new] pushController:vc withOldController:self.navigationController andSetTabBarHidden:YES];
-    }
+//    BOOL isPay = ([[[NSUserDefaults standardUserDefaults] objectForKey:@"com.uu.VIP"] boolValue] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"com.uu.VIP499"] boolValue] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"com.uu.VIP199"] boolValue] || [[[NSUserDefaults standardUserDefaults] objectForKey:@"com.uu.VIP299"] boolValue]);
 }
 
 - (void) addStorageHelper {
@@ -249,14 +228,7 @@
     sharedInstance.storageArray = self.storageArray;
 }
 
-
-//- (void) scrollViewDidEndScrollingAnimation:(UIScrollView *)scrollView {
-//    NSLog(@"结束-----%f",scrollView.contentOffset.y);
-//    [NSObject cancelPreviousPerformRequestsWithTarget:self];
-//}
-
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-//    NSLog(@"滑动-----%f",scrollView.contentOffset.y);
     if ([self.showNavDelegate respondsToSelector:@selector(didShowNav:)]) {
         [self.showNavDelegate didShowNav:scrollView];
     }

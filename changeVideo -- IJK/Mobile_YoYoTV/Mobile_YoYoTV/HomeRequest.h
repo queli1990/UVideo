@@ -8,8 +8,10 @@
 
 #import "GetBaseHttpRequest.h"
 //#import "NoCdnBaseHttpRequest.h"
-#import "HomeModel.h"
+//#import "HomeModel.h"
+#import "MainHomeModel.h"
 #import "GenresModel.h"
+#import "Home_head_model.h"
 
 @interface HomeRequest : GetBaseHttpRequest
 
@@ -18,8 +20,8 @@ typedef void (^httpResponseBlock)(HomeRequest *responseData);
 @property (nonatomic,strong) NSNumber *currentIndex;
 @property (nonatomic,strong) NSError *responseError;
 @property (nonatomic,strong) NSMutableArray *responseDataArray;
-@property (nonatomic,strong) NSArray *responseHeadArray;
-@property (nonatomic,strong) NSArray *genresArray;
+@property (nonatomic,strong) NSArray<Home_head_model *> *responseHeadArray;
+@property (nonatomic,strong) NSArray<GenresModel *> *genresArray;
 @property (nonatomic,strong) NSArray *storageArray;
 
 @property (nonatomic,strong) NSMutableArray *titleArray;

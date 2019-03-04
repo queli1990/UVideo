@@ -17,6 +17,7 @@
 
 - (id) requestRelatedData:(NSDictionary *)params andBlock:(httpResponseBlock)block andFailureBlock:(httpResponseBlock)failureBlock {
     NSString *urlSuffix_str = [NSString stringWithFormat:@"/related/%@/?format=json",self.ID];
+//    NSString *urlSuffix_str = [NSString stringWithFormat:@"/related/%@/?format=json",@0];
     
     [self baseGetRequest:params andTransactionSuffix:urlSuffix_str andBlock:^(GetBaseHttpRequest *responseData) {
         [self jsonArray:responseData._data];

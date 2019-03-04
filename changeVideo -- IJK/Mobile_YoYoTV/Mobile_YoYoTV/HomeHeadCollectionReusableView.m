@@ -21,7 +21,7 @@
     return self;
 }
 
-- (void) setModel:(HomeModel *)model {
+- (void) setModel:(Home_head_model *)model {
     _model = model;
 }
 
@@ -29,18 +29,14 @@
     NSMutableArray *images = [NSMutableArray array];
     NSMutableArray *titles = [NSMutableArray array];
     for (int i = 0; i<bigModels.count; i++) {
-        HomeModel *model = bigModels[i];
+        Home_head_model *model = bigModels[i];
         
-        NSString *imgStr = imgStr = [model.landscape_poster stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> "].invertedSet];
+        NSString *imgStr = imgStr = [model.landscape_poster_m stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet characterSetWithCharactersInString:@"`#%^{}\"[]|\\<> "].invertedSet];
         
         [images addObject:imgStr];
         [titles addObject:model.name];
         NSString *tag;
-        if (model.pay) {
-            tag = @"VIP";
-        } else {
-            tag = model.attributes;
-        }
+        tag = @"";
         [self.tags addObject:tag];
     }
     

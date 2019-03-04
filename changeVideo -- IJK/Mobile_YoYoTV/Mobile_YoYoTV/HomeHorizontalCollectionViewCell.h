@@ -7,13 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "HomeModel.h"
+#import "MainHomeModel.h"
 
 @interface HomeHorizontalCollectionViewCell : UICollectionViewCell
 
 @property (nonatomic,strong) UIImageView *sumImageView;
 @property (nonatomic,strong) UILabel *titleLabel;
-@property (nonatomic,strong) HomeModel *model;
+@property (nonatomic,strong) MainHomeModel *model;
 
 
 /*右上角的小logo，VIP,1080P,720P等等*/

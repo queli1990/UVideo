@@ -16,9 +16,11 @@
     
     NSString *urlSuffix_str ;
     if (self.currentIndex) {
-        urlSuffix_str = [NSString stringWithFormat:@"/genres/%@/?format=json&platform=mobile",self.currentIndex];
+//        urlSuffix_str = [NSString stringWithFormat:@"/genres/%@/?format=json&platform=mobile",self.currentIndex];
+        urlSuffix_str = [NSString stringWithFormat:@"/mhomechannel/%@/?format=json&platform=mobile",self.currentIndex];
     } else {
-        urlSuffix_str = @"/index2/?format=json&platform=mobile";
+//        urlSuffix_str = @"/index2/?format=json&platform=mobile";
+        urlSuffix_str = @"/mhome/?format=json&platform=mobile";
     }
     [self baseGetRequest:params andTransactionSuffix:urlSuffix_str andBlock:^(GetBaseHttpRequest *responseData) {
         [self JsonArrayForHeadParsing:responseData._data];
@@ -33,20 +35,20 @@
 
 - (void)JsonArrayForHeadParsing:(id) responseObject {
     NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-    
+    /// 轮播图的数据
     if (dic[@"config"]) {
         [[NSUserDefaults standardUserDefaults] setObject:dic[@"config"] forKey:@"config"];
     }
-    
     if (dic[@"genres"]) {
         NSArray *genres = dic[@"genres"];
         self.genresArray = [GenresModel modelsWithArray:genres];
     }
     
+    /// list主体数据
     self.storageArray = dic[@"carousel"];
     
     NSArray *headArray = dic[@"carousel"];
-    self.responseHeadArray = [HomeModel modelsWithArray:headArray];
+    self.responseHeadArray = [Home_head_model modelsWithArray:headArray];
     
     for (int i = 0; i<[dic[@"data"] count]; i++) {
         NSArray *itemArray = dic[@"data"];
@@ -60,7 +62,7 @@
     for (int i = 0; i<[dic[@"data"] count]; i++) {
         NSDictionary *contentDic = dic[@"data"][i];
         if ([contentDic[@"data"] count] > 0) {
-            [self.responseDataArray addObject:[HomeModel modelsWithArray:contentDic[@"data"]]];
+            [self.responseDataArray addObject:[MainHomeModel modelsWithArray:contentDic[@"data"]]];
         }
     }
 }

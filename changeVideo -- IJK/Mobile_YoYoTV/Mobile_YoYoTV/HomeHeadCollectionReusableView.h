@@ -8,7 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "BHInfiniteScrollView.h"
-#import "HomeModel.h"
+//#import "HomeModel.h"
+#import "Home_head_model.h"
 
 @protocol HomeCirculationScrollViewDelegate <NSObject>
 - (void) didSecectedHomeCirculationScrollViewAnIndex:(NSInteger)currentpage;
@@ -16,7 +17,7 @@
 
 @interface HomeHeadCollectionReusableView : UICollectionReusableView <BHInfiniteScrollViewDelegate>
 @property (nonatomic,weak) id <HomeCirculationScrollViewDelegate> delegate;
-@property (nonatomic,strong) HomeModel *model;
+@property (nonatomic,strong) Home_head_model *model;
 
 @property (nonatomic,strong) UIView *greenView;
 @property (nonatomic,strong) UILabel *titleLabel;

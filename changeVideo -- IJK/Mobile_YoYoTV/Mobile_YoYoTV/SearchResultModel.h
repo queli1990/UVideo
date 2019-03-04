@@ -23,7 +23,6 @@
 @property (nonatomic,strong) NSNumber *eps;
 @property (nonatomic,copy) NSString *Description;
 @property (nonatomic) BOOL pay;
-@property (nonatomic) BOOL livestream;
 @property (nonatomic,copy) NSString *landscape_poster;
 @property (nonatomic,copy) NSString *portrait_poster;
 @property (nonatomic,strong) NSNumber *genre_id;
@@ -35,8 +34,6 @@
 @property (nonatomic,copy) NSString *en_name;
 @property (nonatomic,strong) NSNumber *pay_eps;
 @property (nonatomic,copy) NSString *category;
-@property (nonatomic,copy) NSString *image_activity;
-
 @property (nonatomic,copy) NSString *attributes;
 @property (nonatomic,copy) NSString *update_progress;
 @property (nonatomic,copy) NSString *score;

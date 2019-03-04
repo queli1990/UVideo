@@ -552,16 +552,7 @@
 }
 
 - (void) showSheet:(UITapGestureRecognizer *)tap {
-    NSDictionary *definitionDic;
-    if (self.type == 3) { // 电影
-        definitionDic = self.vimeoDataDic;
-    } else {
-        definitionDic = self.vimeoDataArray[0];
-    }
-    self.alert.currentIndex = _selectedIndex;
-    [self.alert setupArrayView:definitionDic[@"files"]];
     [self.alert showAlert];
-    self.alert.delegate = self;
 }
 
 #pragma mark -- 选中清晰度时候的按钮回调事件
@@ -576,6 +567,14 @@
 - (XJALertView *)alert {
     if (!_alert) {
         _alert = [[XJALertView alloc] initWithFrame:self.view.bounds];
+        NSDictionary *definitionDic;
+        if (self.type == 3) { // 电影
+            definitionDic = self.vimeoDataDic;
+        } else {
+            definitionDic = self.vimeoDataArray[0];
+        }
+        _alert.currentIndex = _selectedIndex;
+        [_alert setupArrayView:definitionDic[@"files"]];
         _alert.delegate = self;
     }
     return _alert;
