@@ -7,12 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "HomeModel.h"
+#import "HotSearchModel.h"
 
 @interface HotSearchTableViewCell : UITableViewCell
 
 @property (nonatomic,strong) UILabel *indexLable;
 @property (nonatomic,strong) UILabel *nameLable;
-@property (nonatomic,strong) HomeModel *model;
+@property (nonatomic,strong) HotSearchModel *model;
 
 @end

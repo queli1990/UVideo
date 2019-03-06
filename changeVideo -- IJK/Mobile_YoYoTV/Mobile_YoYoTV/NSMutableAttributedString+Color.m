@@ -18,7 +18,7 @@
     
     if (hightlightTextRange.length > 0) {
         [attributeStr addAttribute:NSForegroundColorAttributeName value:color range:hightlightTextRange];
-        [attributeStr addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:14.0f] range:hightlightTextRange];
+        [attributeStr addAttribute:NSFontAttributeName value:[UIFont boldSystemFontOfSize:13.0f] range:hightlightTextRange];
         return attributeStr;
     } else {
         return [rangeText copy];

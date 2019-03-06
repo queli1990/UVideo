@@ -56,6 +56,7 @@
 		0029AB6E21B66B3F00697D6A /* FinishFolderModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0029AB6D21B66B3F00697D6A /* FinishFolderModel.m */; };
 		0029AB7221B68A7300697D6A /* FolderViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0029AB7121B68A7300697D6A /* FolderViewController.m */; };
 		0029AB7521B7D72500697D6A /* NineBoxDownloadBtn.m in Sources */ = {isa = PBXBuildFile; fileRef = 0029AB7421B7D72500697D6A /* NineBoxDownloadBtn.m */; };
+		002A141E222FB84A00ECFAC2 /* HotSearchModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 002A141D222FB84A00ECFAC2 /* HotSearchModel.m */; };
 		002B74BD219A9FE900483841 /* UserActionRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 002B74BC219A9FE900483841 /* UserActionRequest.m */; };
 		002B74C6219D427D00483841 /* YDKeyChain.m in Sources */ = {isa = PBXBuildFile; fileRef = 002B74C2219D427D00483841 /* YDKeyChain.m */; };
 		002B74C7219D427D00483841 /* YDDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 002B74C3219D427D00483841 /* YDDevice.m */; };
@@ -434,6 +435,8 @@
 		0029AB7121B68A7300697D6A /* FolderViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FolderViewController.m; sourceTree = "<group>"; };
 		0029AB7321B7D72500697D6A /* NineBoxDownloadBtn.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NineBoxDownloadBtn.h; sourceTree = "<group>"; };
 		0029AB7421B7D72500697D6A /* NineBoxDownloadBtn.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NineBoxDownloadBtn.m; sourceTree = "<group>"; };
+		002A141C222FB84A00ECFAC2 /* HotSearchModel.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HotSearchModel.h; sourceTree = "<group>"; };
+		002A141D222FB84A00ECFAC2 /* HotSearchModel.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = HotSearchModel.m; sourceTree = "<group>"; };
 		002B74BB219A9FE900483841 /* UserActionRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UserActionRequest.h; sourceTree = "<group>"; };
 		002B74BC219A9FE900483841 /* UserActionRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UserActionRequest.m; sourceTree = "<group>"; };
 		002B74C2219D427D00483841 /* YDKeyChain.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YDKeyChain.m; sourceTree = "<group>"; };
@@ -1144,6 +1147,8 @@
 				005C99DD222D081200302785 /* MainHomeModel.m */,
 				003C0CC31ED56EA5004C2C6A /* GenresModel.h */,
 				003C0CC41ED56EA5004C2C6A /* GenresModel.m */,
+				002A141C222FB84A00ECFAC2 /* HotSearchModel.h */,
+				002A141D222FB84A00ECFAC2 /* HotSearchModel.m */,
 				009E42F41ED6C60400DF39F0 /* SearchResultModel.h */,
 				009E42F51ED6C60400DF39F0 /* SearchResultModel.m */,
 				009E42FE1ED6F59C00DF39F0 /* PlayerModel.h */,
@@ -1483,12 +1488,12 @@
 		002D6B0C21A6ACA300BADF5C /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				002D6B1121A6ACA300BADF5C /* SwizzlingDefine.h */,
 				002D6B0D21A6ACA300BADF5C /* HWProgressHUD.h */,
+				002D6B1021A6ACA300BADF5C /* HWProgressHUD.m */,
+				002D6B1221A6ACA300BADF5C /* HWToolBox.h */,
 				002D6B0E21A6ACA300BADF5C /* HWToolBox.m */,
 				002D6B0F21A6ACA300BADF5C /* HWNetworkReachabilityManager.h */,
-				002D6B1021A6ACA300BADF5C /* HWProgressHUD.m */,
-				002D6B1121A6ACA300BADF5C /* SwizzlingDefine.h */,
-				002D6B1221A6ACA300BADF5C /* HWToolBox.h */,
 				002D6B1321A6ACA300BADF5C /* HWNetworkReachabilityManager.m */,
 				002D6B1421A6ACA300BADF5C /* HWDownloadManager */,
 			);
@@ -1498,15 +1503,15 @@
 		002D6B1421A6ACA300BADF5C /* HWDownloadManager */ = {
 			isa = PBXGroup;
 			children = (
-				002D6B1521A6ACA300BADF5C /* HWDownloadManager.h */,
-				002D6B1621A6ACA300BADF5C /* NSURLSession+CorrectedResumeData.h */,
-				002D6B1721A6ACA300BADF5C /* HWDownloadModel.m */,
 				002D6B1821A6ACA300BADF5C /* HWDownload.h */,
-				002D6B1921A6ACA300BADF5C /* HWDataBaseManager.m */,
+				002D6B1521A6ACA300BADF5C /* HWDownloadManager.h */,
 				002D6B1A21A6ACA300BADF5C /* HWDownloadManager.m */,
 				002D6B1B21A6ACA300BADF5C /* HWDownloadModel.h */,
-				002D6B1C21A6ACA300BADF5C /* NSURLSession+CorrectedResumeData.m */,
+				002D6B1721A6ACA300BADF5C /* HWDownloadModel.m */,
 				002D6B1D21A6ACA300BADF5C /* HWDataBaseManager.h */,
+				002D6B1921A6ACA300BADF5C /* HWDataBaseManager.m */,
+				002D6B1621A6ACA300BADF5C /* NSURLSession+CorrectedResumeData.h */,
+				002D6B1C21A6ACA300BADF5C /* NSURLSession+CorrectedResumeData.m */,
 			);
 			path = HWDownloadManager;
 			sourceTree = "<group>";
@@ -2316,6 +2321,7 @@
 				002FF1CF2180378E0075F1C3 /* PopMenuModel.m in Sources */,
 				002D6AF921A6AB6800BADF5C /* MJPropertyKey.m in Sources */,
 				009E433A1ED9614B00DF39F0 /* StorageHelper.m in Sources */,
+				002A141E222FB84A00ECFAC2 /* HotSearchModel.m in Sources */,
 				00D7077F1FD532D600BB9D99 /* EditNavView.m in Sources */,
 				003390A821F06D640054AB0C /* ChatViewController.m in Sources */,
 				00D7074A1FD0FE2800BB9D99 /* ExitView.m in Sources */,

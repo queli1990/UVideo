@@ -85,6 +85,8 @@ typedef NS_ENUM(NSInteger, ConfigType) {
 @property (nonatomic, assign) NSInteger rateSelectedIndex;
 /// default 1
 @property (nonatomic, assign) NSInteger definitionSelectedIndex;
+/// default YES
+@property (nonatomic, assign) BOOL hideRate;
 
 /// 重置控制层
 - (void)resetControlView;

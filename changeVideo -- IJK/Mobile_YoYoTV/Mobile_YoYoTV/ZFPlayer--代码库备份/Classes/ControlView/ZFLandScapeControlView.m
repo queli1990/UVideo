@@ -104,6 +104,7 @@
     if (self = [super initWithFrame:frame]) {
         _rateSelectedIndex = 1;
         _definitionSelectedIndex = 1;
+        _hideRate = YES;
         
         [self addSubview:self.topToolView];
         [self.topToolView addSubview:self.backBtn];
@@ -177,39 +178,61 @@
     self.currentTimeLabel.frame = CGRectMake(min_x, min_y, min_w, min_h);
     self.currentTimeLabel.centerY = self.playOrPauseBtn.centerY;
     
-    // 清晰度
-    min_w = 50;
-    min_x = self.bottomToolView.width - min_w - ((iPhoneX && self.player.orientationObserver.fullScreenMode == ZFFullScreenModeLandscape) ? 44: min_margin);
-    min_y = 0;
-    min_h = 30;
-    self.definitionBtn.frame = CGRectMake(min_x, min_y, min_w, min_h);
-    self.definitionBtn.centerY = self.playOrPauseBtn.centerY;
-    self.definitionBtn.titleLabel.font = [UIFont systemFontOfSize:14];
-    
-    // 倍速
-    min_x = self.definitionBtn.left-40-4;
-    min_y = 0;
-    min_w = 40;
-    min_h = 30;
-    self.rateBtn.frame = CGRectMake(min_x, min_y, min_w, min_h);
-    self.rateBtn.centerY = self.playOrPauseBtn.centerY;
-    self.rateBtn.titleLabel.font = [UIFont systemFontOfSize:14];
-    
-    // totalTimeLabel
-    min_w = 62;
-    min_x = self.rateBtn.left-min_w-4;
-    min_y = 0;
-    min_h = 30;
-    self.totalTimeLabel.frame = CGRectMake(min_x, min_y, min_w, min_h);
-    self.totalTimeLabel.centerY = self.playOrPauseBtn.centerY;
-    
-    // slider
-    min_x = self.currentTimeLabel.right + 4;
-    min_y = 0;
-    min_w = self.totalTimeLabel.left - min_x - 4;
-    min_h = 30;
-    self.slider.frame = CGRectMake(min_x, min_y, min_w, min_h);
-    self.slider.centerY = self.playOrPauseBtn.centerY;
+    if (self.hideRate) { // 隐藏
+        self.rateBtn.hidden = YES;
+        self.definitionBtn.hidden = YES;
+        
+        min_w = 62;
+        min_x = self.bottomToolView.width - min_w - ((iPhoneX && self.player.orientationObserver.fullScreenMode == ZFFullScreenModeLandscape) ? 44: min_margin);
+        min_y = 0;
+        min_h = 30;
+        self.totalTimeLabel.frame = CGRectMake(min_x, min_y, min_w, min_h);
+        self.totalTimeLabel.centerY = self.playOrPauseBtn.centerY;
+        
+        min_x = self.currentTimeLabel.right + 4;
+        min_y = 0;
+        min_w = self.totalTimeLabel.left - min_x - 4;
+        min_h = 30;
+        self.slider.frame = CGRectMake(min_x, min_y, min_w, min_h);
+        self.slider.centerY = self.playOrPauseBtn.centerY;
+    } else {
+        self.rateBtn.hidden = NO;
+        self.definitionBtn.hidden = NO;
+        
+        // 清晰度
+        min_w = 50;
+        min_x = self.bottomToolView.width - min_w - ((iPhoneX && self.player.orientationObserver.fullScreenMode == ZFFullScreenModeLandscape) ? 44: min_margin);
+        min_y = 0;
+        min_h = 30;
+        self.definitionBtn.frame = CGRectMake(min_x, min_y, min_w, min_h);
+        self.definitionBtn.centerY = self.playOrPauseBtn.centerY;
+        self.definitionBtn.titleLabel.font = [UIFont systemFontOfSize:14];
+        
+        // 倍速
+        min_x = self.definitionBtn.left-40-4;
+        min_y = 0;
+        min_w = 40;
+        min_h = 30;
+        self.rateBtn.frame = CGRectMake(min_x, min_y, min_w, min_h);
+        self.rateBtn.centerY = self.playOrPauseBtn.centerY;
+        self.rateBtn.titleLabel.font = [UIFont systemFontOfSize:14];
+        
+        // totalTimeLabel
+        min_w = 62;
+        min_x = self.rateBtn.left-min_w-4;
+        min_y = 0;
+        min_h = 30;
+        self.totalTimeLabel.frame = CGRectMake(min_x, min_y, min_w, min_h);
+        self.totalTimeLabel.centerY = self.playOrPauseBtn.centerY;
+        
+        // slider
+        min_x = self.currentTimeLabel.right + 4;
+        min_y = 0;
+        min_w = self.totalTimeLabel.left - min_x - 4;
+        min_h = 30;
+        self.slider.frame = CGRectMake(min_x, min_y, min_w, min_h);
+        self.slider.centerY = self.playOrPauseBtn.centerY;
+    }
     
     min_x = (iPhoneX && self.player.orientationObserver.fullScreenMode == ZFFullScreenModeLandscape) ? 50: 18;
     min_y = 0;
@@ -469,7 +492,7 @@
             cell.titleLabel.textColor = [UIColor whiteColor];
         }
         cell.dic = self.definitionArray[indexPath.row];
-        cell.titleLabel.text = cell.dic[@"width"];
+        cell.titleLabel.text = [NSString stringWithFormat:@"%@",cell.dic[@"width"]];
     }
     return cell;
 }

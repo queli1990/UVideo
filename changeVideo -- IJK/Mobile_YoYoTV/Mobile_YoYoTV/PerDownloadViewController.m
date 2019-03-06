@@ -15,6 +15,7 @@
 #import "NSMutableAttributedString+Color.h"
 #import "UserActionRequest.h"
 #import "SettingViewController.h"
+#import "DownloadFinishViewController.h"
 
 @interface PerDownloadNavView : UIView
 @property (nonatomic,strong) UIButton *backBtn;
@@ -247,7 +248,20 @@
     NSMutableAttributedString *indroStr1 = [NSMutableAttributedString setupAttributeString:combinStr rangeText:contentStr textColor:UIColorFromRGB(0x0BBF06, 1.0)];
     
     _calculateView.topLabel.attributedText = indroStr1;
-    _calculateView.leftLabel.text = [NSString stringWithFormat:@"剩余:%.1f GB",(leftNum/1024/1024/1024)];
+    
+    replyNickName = [NSString stringWithFormat:@"剩余:%.1f GB  ",(leftNum/1024/1024/1024)];
+    contentStr = @"\"查看缓存文件\"";
+    combinStr = [NSString stringWithFormat:@"%@%@",replyNickName,contentStr];
+    indroStr1 = [NSMutableAttributedString setupAttributeString:combinStr rangeText:contentStr textColor:UIColorFromRGB(0x0BBF06, 1.0)];
+    _calculateView.leftLabel.attributedText = indroStr1;
+    
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(goDownloadVC:)];
+    [_calculateView addGestureRecognizer:tap];
+}
+
+- (void) goDownloadVC:(UITapGestureRecognizer *)tap {
+    DownloadFinishViewController *vc = [DownloadFinishViewController new];
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (void) setupHeaderView {
@@ -401,7 +415,11 @@
     _leftSizeNum -= btn.model.totalFileSize;
     [self setCalculateViewLabelText];
     
-    // 用于存储文件夹
+    [self stroageFolder];
+}
+
+/// 用于存储文件夹
+- (void) stroageFolder {
     NSString *folderImage = self.model.landscape_poster_s;
     NSString *folderName = self.model.name;
     NSArray *folders = [[NSUserDefaults standardUserDefaults] objectForKey:@"folders"];
@@ -488,26 +506,7 @@
         // 点击正在下载、等待状态，调用暂停下载
         [[HWDownloadManager shareManager] pauseDownloadTask:cell.model];
     }
-    // 用于存储文件夹
-    NSString *folderImage = self.model.landscape_poster_s;
-    NSString *folderName = self.model.name;
-    NSArray *folders = [[NSUserDefaults standardUserDefaults] objectForKey:@"folders"];
-    if (!folders) {
-        folders = [NSArray array];
-    }
-    BOOL exist = NO;
-    for (NSDictionary *tempDic in folders) {
-        if ([tempDic[@"identifier"] isEqualToString:self.ID]) {
-            exist = YES;
-            break;
-        }
-    }
-    if (!exist) {
-        NSDictionary *folderDic = @{@"identifier":self.ID,@"folderName":folderName,@"folderImage":folderImage};
-        NSMutableArray *tempArray = [NSMutableArray arrayWithArray:folders];
-        [tempArray insertObject:folderDic atIndex:0];
-        [[NSUserDefaults standardUserDefaults] setObject:(NSArray *)tempArray forKey:@"folders"];
-    }
+    [self stroageFolder];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {

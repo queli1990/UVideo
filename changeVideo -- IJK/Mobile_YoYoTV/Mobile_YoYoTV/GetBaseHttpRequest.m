@@ -7,9 +7,10 @@
 //
 
 #import "GetBaseHttpRequest.h"
-//#define baseURL_vego @"http://cdn.100uu.tv"//线上
+
 #define baseURL_vego @"http://videocdn.chinesetvall.com"
-//#define baseURL_vego @"http://dw4f3k6eh2fyb.cloudfront.net/"
+//#define baseURL_vego @"http://192.168.188.188:8082" // 测试地址
+
 
 @implementation GetBaseHttpRequest
 

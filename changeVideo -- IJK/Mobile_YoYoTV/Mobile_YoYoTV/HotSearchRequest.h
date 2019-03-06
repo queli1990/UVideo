@@ -7,7 +7,7 @@
 //
 
 #import "GetBaseHttpRequest.h"
-#import "HomeModel.h"
+#import "HotSearchModel.h"
 
 @interface HotSearchRequest : GetBaseHttpRequest
 

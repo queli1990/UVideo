@@ -1036,6 +1036,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
 - (ZFPlayerControlView *)controlView {
     if (!_controlView) {
         _controlView = [ZFPlayerControlView new];
+        _controlView.landScapeControlView.hideRate = NO;
         _controlView.landScapeControlView.tempViewController = self.navigationController;
         _controlView.landScapeControlView.definitionBtn.userInteractionEnabled = NO;
         _controlView.landScapeControlView.delegate = self;
@@ -1047,6 +1048,8 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
 
 # pragma mark 清晰度、倍速选择回调
 - (void) selectedIndex:(NSInteger)index withConfigType:(ConfigType)type {
+    self.controlView.coverImageView.image = [self.playerManager thumbnailImageAtCurrentTime];
+    
     if (type == rateType) { // 改变的播放速率
         NSArray *tempArr = @[@"播放倍速",@"1.0X",@"1.25X",@"1.5X",@"2.0X"];
         [_controlView.landScapeControlView.rateBtn setTitle:tempArr[index] forState:UIControlStateNormal];

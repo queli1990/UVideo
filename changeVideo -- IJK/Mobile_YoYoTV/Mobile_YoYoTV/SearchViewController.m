@@ -170,7 +170,7 @@ const CGFloat NavHeight = 64;
 
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    HomeModel *model = _datas[indexPath.row];
+    HotSearchModel *model = _datas[indexPath.row];
     [self passKeywordToResultView:model.name];
     //点击item时:
     //1.将keyword传入到resuleView界面

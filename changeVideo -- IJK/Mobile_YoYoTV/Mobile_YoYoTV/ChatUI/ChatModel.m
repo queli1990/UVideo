@@ -161,8 +161,8 @@ static NSString *previousTime = nil;
                              @"action_date":action_date,
                              @"platform":platform,
                              @"msg":msg,
-                             @"version_number":appVersion,
-                             @"version_code":appBuildVersion
+                             @"version_number":appBuildVersion,
+                             @"version_code":appVersion
                              };
     NSString *url = [NSString stringWithFormat:@"%@%@",BaseUrl,@"feedbacks"];
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];

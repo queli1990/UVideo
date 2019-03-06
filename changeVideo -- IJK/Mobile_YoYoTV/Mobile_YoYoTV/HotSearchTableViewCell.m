@@ -32,7 +32,7 @@
     return self;
 }
 
-- (void) setModel:(HomeModel *)model {
+- (void) setModel:(HotSearchModel *)model {
     _model = model;
     _nameLable.text = model.name;
 }

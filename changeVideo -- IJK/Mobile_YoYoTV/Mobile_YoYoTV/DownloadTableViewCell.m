@@ -49,10 +49,10 @@
         [self.speedLabel mas_makeConstraints:^(MASConstraintMaker *make) {
             make.top.mas_equalTo(self.progressView.mas_bottom).offset(5);
             make.left.mas_equalTo(self.titleLabel);
-            make.size.mas_equalTo(CGSizeMake(90, 16));
+            make.size.mas_equalTo(CGSizeMake(145, 16));
         }];
         [self.fileSizeLabel mas_makeConstraints:^(MASConstraintMaker *make) {
-            make.size.mas_equalTo(CGSizeMake(110, 16));
+            make.size.mas_equalTo(CGSizeMake(55, 16));
             make.top.mas_equalTo(self.speedLabel);
             make.right.mas_equalTo(self.progressView);
         }];
@@ -83,14 +83,15 @@
 - (void)reloadLabelWithModel:(HWDownloadModel *)model
 {
     NSString *totalSize = [HWToolBox stringFromByteCount:model.totalFileSize];
-    NSString *tmpSize = [HWToolBox stringFromByteCount:model.tmpFileSize];
+//    NSString *tmpSize = [HWToolBox stringFromByteCount:model.tmpFileSize];
     
-    if (model.state == HWDownloadStateFinish) {
+    /// 显示已经下载的大小
+//    if (model.state == HWDownloadStateFinish) {
         _fileSizeLabel.text = [NSString stringWithFormat:@"%@", totalSize];
-        
-    }else {
-        _fileSizeLabel.text = [NSString stringWithFormat:@"%@ / %@", tmpSize, totalSize];
-    }
+//
+//    }else {
+//        _fileSizeLabel.text = [NSString stringWithFormat:@"%@ / %@", tmpSize, totalSize];
+//    }
     _fileSizeLabel.hidden = model.totalFileSize == 0;
     
     if (model.state == HWDownloadStatePaused) {
@@ -100,8 +101,19 @@
         _speedLabel.text = @"下载出错，请重试";
         _speedLabel.textColor = UIColorFromRGB(0xFF561E, 1.0);
     } else if (model.state == HWDownloadStateWaiting) {
-        _speedLabel.text = @"等待缓存";
-        _speedLabel.textColor = UIColorFromRGB(0x808080, 1.0);
+        BOOL allowsCellular = [[NSUserDefaults standardUserDefaults] boolForKey:HWDownloadAllowsCellularAccessKey];
+        if (allowsCellular) { // 允许4G下载
+            _speedLabel.text = @"等待缓存";
+            _speedLabel.textColor = UIColorFromRGB(0x808080, 1.0);
+        } else { // 不允许4G下载
+            if (([[HWNetworkReachabilityManager shareManager] networkReachabilityStatus] == AFNetworkReachabilityStatusReachableViaWiFi)) { // WiFi环境
+                _speedLabel.text = @"等待缓存";
+                _speedLabel.textColor = UIColorFromRGB(0x808080, 1.0);
+            } else { // 非 WiFi 环境
+                _speedLabel.text = @"“允许非WiFi网络下载”已关闭";
+                _speedLabel.textColor = UIColorFromRGB(0xE83A00, 1.0);
+            }
+        }
     } else if (model.speed > 0) {
         _speedLabel.text = [NSString stringWithFormat:@"%@ / s", [HWToolBox stringFromByteCount:model.speed]];
         _speedLabel.textColor = UIColorFromRGB(0x0BBF06, 1.0);

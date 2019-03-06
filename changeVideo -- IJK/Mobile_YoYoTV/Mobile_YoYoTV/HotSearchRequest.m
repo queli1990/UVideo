@@ -7,7 +7,7 @@
 //
 
 #import "HotSearchRequest.h"
-#define urlSuffix_str @"/hots?format=json"
+#define urlSuffix_str @"/mhots?format=json"
 
 
 @implementation HotSearchRequest 
@@ -26,7 +26,7 @@
 - (void) jsonArray:(id)responseObject {
     NSDictionary *dic = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
     NSArray *carouselArray = dic[@"results"];
-    self.responseData = [HomeModel modelsWithArray:carouselArray];
+    self.responseData = [HotSearchModel modelsWithArray:carouselArray];
 }
 
 

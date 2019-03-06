@@ -204,8 +204,8 @@
     if (downloadsArray.count) {
         for (int i = 0; i < downloadsArray.count; i++) {
             PlayerModel *model = [PlayerModel modelWithDictionary:downloadsArray[i]];
-            if (![model.quality isEqualToString:@"hls"]) {
-                NSDictionary *dic = @{@"width":[NSString stringWithFormat:@"%@",model.width],@"url":[NSURL URLWithString:model.link]};
+            if (![model.quality isEqualToString:@"hls"] && ![model.quality isEqualToString:@"source"]) {
+                NSDictionary *dic = @{@"width":[NSString stringWithFormat:@"%@P",model.width],@"url":[NSURL URLWithString:model.link]};
                 [tempArray addObject:dic];
             }
         }
