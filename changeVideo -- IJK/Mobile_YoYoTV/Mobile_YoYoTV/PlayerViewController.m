@@ -32,6 +32,7 @@
 #import "PlayerNativeAdsView.h"
 #import "PerDownloadViewController.h"
 #import "ZFUtilities.h"
+#import <AppsFlyerLib/AppsFlyerTracker.h>
 
 static NSString *const LiveAdUnit = @"ca-app-pub-7468136908049062/2225844601";
 static NSString *const pageCode = @"1000100006";
@@ -118,6 +119,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
         [self.player.currentPlayerManager pause];
         _isPop = YES;
     }
+    [self postAppsFlyerWatchTime];
 }
 
 - (void)viewDidLoad {
@@ -129,6 +131,8 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     self.currentIndex = 0;
     self.ID ? [self requestModel] : [self requestUserInfoData];
     [self setupPlayer];
+    
+    _appsFlyerBeginTime = [Tools getTimeStamp];
     
 //    StorageHelper *instance = [StorageHelper sharedSingleClass];
 //    self.storageArray = instance.storageArray;
@@ -262,6 +266,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
 //        [self setModelUrl];
 //    }
     [self setModelUrl];
+    [[AppsFlyerTracker sharedTracker] trackEvent:@"playCount" withValues:@{}];
     [UIView animateWithDuration:0.3 animations:^{
         _bannerView.alpha = 1;
     }];
@@ -313,8 +318,8 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
 - (void) setDefaultLandScapeDefinition {
     self.controlView.landScapeControlView.definitionBtn.userInteractionEnabled = YES;
     NSMutableArray *tempArray = [NSMutableArray arrayWithArray:_urlsArray];
-    [tempArray insertObject:@{@"width":@"清晰度",@"url":@""} atIndex:0];
-    [self.controlView.landScapeControlView.definitionBtn setTitle:[tempArray[1] objectForKey:@"width"] forState:UIControlStateNormal];
+    [tempArray insertObject:@{@"height":@"清晰度",@"url":@""} atIndex:0];
+    [self.controlView.landScapeControlView.definitionBtn setTitle:[tempArray[1] objectForKey:@"height"] forState:UIControlStateNormal];
     self.controlView.landScapeControlView.definitionArray = (NSArray *)tempArray;
 }
 
@@ -362,6 +367,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     _player.playerDidToEnd = ^(id<ZFPlayerMediaPlayback>  _Nonnull asset) {
         @strongify(self);
         [self sendBuffer];
+        [self postAppsFlyerWatchTime];
     };
 }
 
@@ -576,7 +582,8 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
         btn.selected = YES;
         return;
     }
-    [self clearLastPlayerConfig];
+//    [self clearLastPlayerConfig];
+    self.controlView.landScapeControlView.definitionSelectedIndex = 1;
     [self clearLandScapeDefinition];
     _currentIndex = index;
     btn.selected = YES;
@@ -598,6 +605,8 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     [self.player.currentPlayerManager play];
     _firstBufferStartTime = [Tools getTimeStamp];
     _isFirstBuffer = YES;
+    [[AppsFlyerTracker sharedTracker] trackEvent:@"playCount" withValues:@{}];
+    [self postAppsFlyerWatchTime];
 }
 
 - (void) setupPlayer {
@@ -776,6 +785,21 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
     [_tableView reloadData];
 }
 
+/// 发送appsFlyer的观看时长
+- (void) postAppsFlyerWatchTime {
+    _appsFlyerEndTime = [Tools getTimeStamp];
+    NSInteger watchTime = (_appsFlyerEndTime.integerValue - _appsFlyerBeginTime.integerValue)/1000;
+    if (watchTime <= 0) return;
+    [[AppsFlyerTracker sharedTracker] trackEvent:@"videoPlayTime" withValues:
+     @{
+       @"videoName":[NSString stringWithFormat:@"%@",self.model.name],
+       @"episodeNum":[NSString stringWithFormat:@"%ld",(long)(_currentIndex+1)],
+       @"playTime":[Tools timeFormatted:watchTime]
+       }];
+    _appsFlyerBeginTime = [Tools getTimeStamp];
+    _appsFlyerEndTime = 0;
+}
+
 - (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     UIView *footView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 1)];
     footView.backgroundColor = [UIColor whiteColor];
@@ -797,6 +821,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
 //点中cell的相应事件
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    [self postAppsFlyerWatchTime];
     [self clearLandScapeDefinition];
     if (_isLoadingData) {
         [ShowErrorAlert showSuccessWithMsg:@"小主，稍等哦，数据还在加载中" withViewController:self finish:^{
@@ -1059,7 +1084,7 @@ static NSString *kVideoCover = @"https://upload-images.jianshu.io/upload_images/
         NSTimeInterval time = self.playerManager.currentTime;
         self.playerManager.seekTime = time;
         self.player.assetURL = tempDic[@"url"];
-        [_controlView.landScapeControlView.definitionBtn setTitle:tempDic[@"width"] forState:UIControlStateNormal];
+        [_controlView.landScapeControlView.definitionBtn setTitle:tempDic[@"height"] forState:UIControlStateNormal];
     }
 }
 

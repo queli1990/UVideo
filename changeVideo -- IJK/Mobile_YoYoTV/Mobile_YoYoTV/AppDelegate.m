@@ -26,7 +26,8 @@
 #import "ChatModel.h"
 
 @interface AppDelegate ()<AppsFlyerTrackerDelegate>
-
+@property (nonatomic,strong) NSNumber *enterTime;
+@property (nonatomic,strong) NSNumber *leaveTime;
 @end
 
 
@@ -141,6 +142,12 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     // 实现如下代码，才能使程序处于后台时被杀死，调用applicationWillTerminate:方法
     [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^(){}];
+    /// 切入后台时间
+    _leaveTime = [Tools getTimeStamp];
+    NSInteger time = _leaveTime.integerValue - _enterTime.integerValue;
+    if (time <= 0) return;
+    NSString *timeStr = [Tools timeFormatted:time];
+    [[AppsFlyerTracker sharedTracker] trackEvent:@"watchTime" withValues:@{@"watchTimeValue":timeStr}];
 }
 
 
@@ -152,6 +159,8 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application {
     [FBSDKAppEvents activateApp];
     [[AppsFlyerTracker sharedTracker] trackAppLaunch];
+    /// 启动时间
+    _enterTime = [Tools getTimeStamp];
 }
 
 // 一次性代码

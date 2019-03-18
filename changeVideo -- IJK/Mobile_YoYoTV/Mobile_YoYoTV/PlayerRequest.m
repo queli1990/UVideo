@@ -192,10 +192,10 @@
     
     NSMutableArray *resultArr  = [NSMutableArray arrayWithCapacity:0];
     for (int i = 0; i < urlArr.count; i++) {
-        NSDictionary *dic = @{@"width":resolutionArr[i],@"url":urlArr[i]};
+        NSDictionary *dic = @{@"height":resolutionArr[i],@"url":urlArr[i]};
         [resultArr addObject:dic];
     }
-    [resultArr insertObject:@{@"width":@"清晰度"} atIndex:0];
+    [resultArr insertObject:@{@"height":@"清晰度"} atIndex:0];
     return resultArr;
 }
 
@@ -205,7 +205,27 @@
         for (int i = 0; i < downloadsArray.count; i++) {
             PlayerModel *model = [PlayerModel modelWithDictionary:downloadsArray[i]];
             if (![model.quality isEqualToString:@"hls"] && ![model.quality isEqualToString:@"source"]) {
-                NSDictionary *dic = @{@"width":[NSString stringWithFormat:@"%@P",model.width],@"url":[NSURL URLWithString:model.link]};
+                NSString *height = [NSString stringWithFormat:@"%@P",model.height];
+                if (height.integerValue <= 144) {
+                    height = @"144";
+                } else if (height.integerValue <= 240) {
+                    height = @"240";
+                } else if (height.integerValue <= 360) {
+                    height = @"360";
+                } else if (height.integerValue <= 480) {
+                    height = @"480";
+                } else if (height.integerValue <= 560) {
+                    height = @"560";
+                } else if (height.integerValue <= 720) {
+                    height = @"720";
+                } else if (height.integerValue <= 1080) {
+                    height = @"1080";
+                } else if (height.integerValue <= 1440) {
+                    height = @"1440";
+                } else if (height.integerValue <= 2160) {
+                    height = @"2160";
+                }
+                NSDictionary *dic = @{@"height":height,@"url":[NSURL URLWithString:model.link]};
                 [tempArray addObject:dic];
             }
         }
@@ -219,7 +239,7 @@
     [tempArray sortUsingComparator:^NSComparisonResult(id _Nonnull obj1, id _Nonnull obj2)
      {
          //此处的规则含义为：若前一元素比后一元素小，则返回降序（即后一元素在前，为从大到小排列）
-         if ([obj1[@"width"] integerValue] > [obj2[@"width"] integerValue]){
+         if ([obj1[@"height"] integerValue] > [obj2[@"height"] integerValue]){
              return NSOrderedDescending;
          } else {
              return NSOrderedAscending;

@@ -18,6 +18,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// 毫秒数
 + (NSNumber *)getTimeStamp;
 
++ (NSString *)timeFormatted:(NSInteger)totalSeconds;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -443,7 +443,7 @@
     _rateSelectedIndex = 1;
     _definitionSelectedIndex = 1;
     [self.rateBtn setTitle:@"1.0X" forState:UIControlStateNormal];
-//    [self.definitionBtn setTitle:[self.definitionArray[0] objectForKey:@"width"] forState:UIControlStateNormal];
+//    [self.definitionBtn setTitle:[self.definitionArray[0] objectForKey:@"height"] forState:UIControlStateNormal];
 }
 
 #pragma mark UITableViewDelegate
@@ -492,7 +492,7 @@
             cell.titleLabel.textColor = [UIColor whiteColor];
         }
         cell.dic = self.definitionArray[indexPath.row];
-        cell.titleLabel.text = [NSString stringWithFormat:@"%@",cell.dic[@"width"]];
+        cell.titleLabel.text = [NSString stringWithFormat:@"%@",cell.dic[@"height"]];
     }
     return cell;
 }

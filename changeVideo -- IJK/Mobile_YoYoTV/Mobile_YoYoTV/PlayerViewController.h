@@ -38,6 +38,9 @@
 @property (nonatomic,assign) NSNumber *nextBufferStartTime;
 @property (nonatomic,assign) NSNumber *nextBufferEndTime;
 
+///
+@property (nonatomic,assign) NSNumber *appsFlyerBeginTime;
+@property (nonatomic,assign) NSNumber *appsFlyerEndTime;
 
 
 @end

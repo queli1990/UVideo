@@ -141,6 +141,13 @@
         _tableView.backgroundColor = [UIColor whiteColor];
         _tableView.allowsMultipleSelectionDuringEditing = YES;
         _tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+        UILabel *footerLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 40)];
+        footerLabel.textColor = UIColorFromRGB(0x9B9B9B, 1.0);
+        footerLabel.text = @"注：如出现下载“已暂停”或“下载错误”，请点击重新下载";
+        footerLabel.font = [UIFont systemFontOfSize:12.0];
+        footerLabel.textAlignment = NSTextAlignmentCenter;
+        _tableView.tableFooterView = footerLabel;
+        _tableView.sectionFooterHeight = 40;
     }
     return _tableView;
 }

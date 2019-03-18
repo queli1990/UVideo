@@ -51,13 +51,13 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Mobile_YoYoTV/NineBoxDownloadBtn.m"
-            timestampString = "572412777.605211"
+            filePath = "Mobile_YoYoTV/PlayerViewController.m"
+            timestampString = "574323571.691126"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "84"
-            endingLineNumber = "84"
-            landmarkName = "-touchesBegan:withEvent:"
+            startingLineNumber = "686"
+            endingLineNumber = "686"
+            landmarkName = "-postVideoInfo"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
